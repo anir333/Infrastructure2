@@ -8,17 +8,19 @@
         {
             "name": "PlatformIO",
             "includePath": [
-                "/home/anir333/Desktop/KDG/Subjects/Year 1/Semester 2/5. Infrastructure 2/Term2/anir-aouladhaddousaddik/ProjectLearning/include",
-                "/home/anir333/Desktop/KDG/Subjects/Year 1/Semester 2/5. Infrastructure 2/Term2/anir-aouladhaddousaddik/ProjectLearning/src",
+                "/home/anir333/Desktop/KDG/Subjects/Year 1/Semester 2/5. Infrastructure 2/Term2/anir-aouladhaddousaddik/ProjectLearning/anir-aouladhaddousaddik/ProjectLearning/include",
+                "/home/anir333/Desktop/KDG/Subjects/Year 1/Semester 2/5. Infrastructure 2/Term2/anir-aouladhaddousaddik/ProjectLearning/anir-aouladhaddousaddik/ProjectLearning/src",
                 "/home/anir333/Desktop/KDG/Subjects/Year 1/Semester 2/5. Infrastructure 2/Term2/anir-aouladhaddousaddik/ProjectLearning/lib/usart",
+                "/home/anir333/Desktop/KDG/Subjects/Year 1/Semester 2/5. Infrastructure 2/Term2/anir-aouladhaddousaddik/ProjectLearning/anir-aouladhaddousaddik/ProjectLearning/lib/usart",
                 ""
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "/home/anir333/Desktop/KDG/Subjects/Year 1/Semester 2/5. Infrastructure 2/Term2/anir-aouladhaddousaddik/ProjectLearning/include",
-                    "/home/anir333/Desktop/KDG/Subjects/Year 1/Semester 2/5. Infrastructure 2/Term2/anir-aouladhaddousaddik/ProjectLearning/src",
+                    "/home/anir333/Desktop/KDG/Subjects/Year 1/Semester 2/5. Infrastructure 2/Term2/anir-aouladhaddousaddik/ProjectLearning/anir-aouladhaddousaddik/ProjectLearning/include",
+                    "/home/anir333/Desktop/KDG/Subjects/Year 1/Semester 2/5. Infrastructure 2/Term2/anir-aouladhaddousaddik/ProjectLearning/anir-aouladhaddousaddik/ProjectLearning/src",
                     "/home/anir333/Desktop/KDG/Subjects/Year 1/Semester 2/5. Infrastructure 2/Term2/anir-aouladhaddousaddik/ProjectLearning/lib/usart",
+                    "/home/anir333/Desktop/KDG/Subjects/Year 1/Semester 2/5. Infrastructure 2/Term2/anir-aouladhaddousaddik/ProjectLearning/anir-aouladhaddousaddik/ProjectLearning/lib/usart",
                     ""
                 ]
             },
