@@ -1,8 +1,13 @@
 #include <avr/io.h>
+#include <stdio.h>
+#include <usart.h>
 
 int main() {
-  DDRB = 0b00010000;
-  PORTB  = 0b00000000;
+  DDRB = 0b11111111;
+  PORTB  = 0b11110000;
 
+  initUSART();
+  printf("\n");
+  printf("hey\n");
   return 0;
 }
