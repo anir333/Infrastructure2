@@ -1,18 +1,35 @@
 #include <avr/io.h>   //Library containing the arduino register definitions
 #include <util/delay.h> //Library containing the delay (~sleep) function
 #include <usart.h>
+#include <LEDs.h>
 
-int main(){ 
-//   initUSART();
-//  DDRB = 0b00001000;  //The 3rd led is connected to PB4, numbered from right to left (start counting from 0)
-//  PORTB = 0b00000000; // we don't apply voltage so there is a voltage difference so the led at pin 3 lights up
-//  while (1){          //A while 1 loop to blink "forever"  
-//    PORTB = 0b00000000;//we don't apply voltage to PB4, so there is a voltage difference, by consequence the led lights up
-//    _delay_ms(1000);
-//    PORTB = 0b00011100;//we apply voltage to PB4, so the voltage difference becomes 0, by consequence the led goes dark
-//    _delay_ms(1000);
-//    }
-return 0;
+
+int main(){
+    enableOneLed(2);
+pauseSeconds(1);
+    enableMultipleLeds(0b00111100); 
+pauseSeconds(1);
+    enableAllLeds ();
+pauseSeconds(1);
+    lightUpOneLed(2); 
+pauseSeconds(1);
+    lightUpMultipleLeds (0b00101000);
+pauseSeconds(1);
+    lightUpAllLeds (); 
+pauseSeconds(1);
+    lightDownOneLed(1); 
+pauseSeconds(1);
+    lightDownMultipleLeds (0b00101100);
+pauseSeconds(1);
+    lightDownAllLeds (); 
+pauseSeconds(1);
+    lightUpAllLeds();
+pauseSeconds(1);
+    lightToggleOneLed(3);
+
+// this is a change
+
+  return 0;
 }
 
 
@@ -20,7 +37,7 @@ return 0;
 
 
 
-// Testin library usart :
+// Testing usart library :
 
 
 // #include <util/delay.h>
