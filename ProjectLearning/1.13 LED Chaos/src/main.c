@@ -4,20 +4,10 @@
 
 int main() {
   enableAllLeds();
+  ledChaos();
+  
 
-    do {
-        int randomLedGenerated = rand() % 4 + 1;
-        int randomDurationInMiliseconds = rand() % 901 + 100;
-
-        lightUpOneLed(randomLedGenerated);
-        _delay_ms(randomDurationInMiliseconds);
-
-
-        lightDownOneLed(randomLedGenerated);
-
-    } while (1);
-
-    return 0;
+  return 0;
 }
 
 

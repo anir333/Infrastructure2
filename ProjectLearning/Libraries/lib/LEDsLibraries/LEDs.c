@@ -1,7 +1,8 @@
+#define __DELAY_BACKWARD_COMPATIBLE__
+#include <util/delay.h>
 #include <stdio.h>
 #include <avr/io.h>
 #include <LEDs.h>
-#include <util/delay.h>
 #include <time.h>
 
 void pauseSeconds(int seconds) {
@@ -39,7 +40,7 @@ void lightUpMultipleLeds(uint8_t byte) {
     PORTB = byte;
 }
 
-void lightUpAllLeds() {
+void lightUpAllLeds(void) {
     PORTB = 0b00000000;
 }
 
@@ -51,7 +52,7 @@ void lightDownMultipleLeds(uint8_t byte) {
     PORTB = byte;
 }
 
-void lightDownAllLeds() {
+void lightDownAllLeds(void) {
     PORTB = 0b00111100;
 }
 
@@ -97,9 +98,23 @@ void fadeInLed(int led, int duration) {
 }
 
 
-// void fadeOutLed(int led, int duration) {
-//     for (int i = 100; i >= 0; i--) {
-//         dimLed(led, 99, duration);
-//         _delay_ms(200);
-//     }
-// }
+void fadeOutLed(int led, int duration) {
+    for (int i = 100; i >= 0; i--) {
+        dimLed(led, 99, duration);
+        _delay_ms(200);
+    }
+}
+
+void ledChaos(void) {
+    do {
+        int randomLedGenerated = rand() % 4 + 1;
+        int randomDurationInMiliseconds = rand() % 901 + 100;
+
+        lightUpOneLed(randomLedGenerated);
+        _delay_ms(randomDurationInMiliseconds);
+
+
+        lightDownOneLed(randomLedGenerated);
+
+    } while (1);
+}

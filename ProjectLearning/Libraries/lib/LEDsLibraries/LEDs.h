@@ -29,7 +29,7 @@ void lightUpOneLedONLY(int);
 void lightUpMultipleLeds(uint8_t);
 
 /* It overwrites previous PORTB and lights up all the LEDs */
-void lightUpAllLeds(); 
+void lightUpAllLeds(void); 
 
 /* It lights down the specified LED (it doesn't overwrite, so if other LEDs were lit up they will stay on) */
 void lightDownOneLed(int); 
@@ -38,15 +38,19 @@ void lightDownOneLed(int);
 void lightDownMultipleLeds (uint8_t);
 
 /* It overwrites previous PORTB and lights down all the LEDs */
-void lightDownAllLeds (); 
+void lightDownAllLeds(void); 
 
 /* It switches the current state of the specified LED (from OFF to ON and vivecersa) */
 void lightToggleOneLed(int);
 
-
+/* Dims the LED specified, the specified percentage, during the specified amount of time (lednumber, dimming percentage, duration in milliseconds) */
 void dimLed(int, int, int);
 
-
+/*  it's supposed to fade in the led but i haven't figured it out yet */
 void fadeInLed(int, int);
 
+/*  it's supposed out fade in the led but i haven't figured it out yet */
 void fadeOutLed(int, int);
+
+/* Function that makes the LEDs flash in a random pattern: randomly selected LEDs are switched on and off for arbitrarily long periods (between 100 and 1000 milliseconds */
+void ledChaos(void);
