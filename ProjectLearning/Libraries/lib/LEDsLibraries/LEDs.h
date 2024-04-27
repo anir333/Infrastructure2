@@ -42,3 +42,11 @@ void lightDownAllLeds ();
 
 /* It switches the current state of the specified LED (from OFF to ON and vivecersa) */
 void lightToggleOneLed(int);
+
+
+void dimLed(int, int, int);
+
+
+void fadeInLed(int, int);
+
+void fadeOutLed(int, int);
