@@ -1,16 +1,17 @@
-#include <avr/io.h>   //Library containing the arduino register definitions
-#include <util/delay.h> //Library containing the delay (~sleep) function
+// #include <avr/io.h>   //Library containing the arduino register definitions
+// #include <util/delay.h> //Library containing the delay (~sleep) function
 
-int main(){ 
-//  DDRB = 0b00011100;  //The 3rd led is connected to PB4, numbered from right to left (start counting from 0)
- while (1){          //A while 1 loop to blink "forever"  
-   PORTB = 0b00000000;//we don't apply voltage to PB4, so there is a voltage difference, by consequence the led lights up
-   _delay_ms(1000);
-   PORTB = 0b00011100;//we apply voltage to PB4, so the voltage difference becomes 0, by consequence the led goes dark
-   _delay_ms(1000);
-   }
-// return 0;
-}
+// int main(){ 
+// //  DDRB = 0b00111100;  //The 3rd led is connected to PB4, numbered from right to left (start counting from 0)
+// //  while (1){          //A while 1 loop to blink "forever"  
+// //    PORTB = 0b00000000;//we don't apply voltage to PB4, so there is a voltage difference, by consequence the led lights up
+// //    _delay_ms(1000);
+// //    PORTB = 0b00011100;//we apply voltage to PB4, so the voltage difference becomes 0, by consequence the led goes dark
+// //    _delay_ms(1000);
+// //    }
+// // return 0;
+//     // PORTB |= 0b00000000;
+// }
 
 
 
@@ -49,14 +50,16 @@ int main(){
 
 
 
-// 1.10 Demo 2 - Flashing LEDs
+// // 1.10 Demo 2 - Flashing LEDs
 // #include <util/delay.h>
 // #include <avr/io.h>
+// #include <usart.h>
 
 // #define NUMBER_OF_LEDS 4 // Define is a "preprocessor directive". It ensures that every NUMBER_OF_LEDS will be replaced by 4 in the following code
 
 // void enableLed ( int lednumber ) //C has no classes; functions can be included directly in the .c file.
 // {
+//     // printString("\nenableLed\n");
 //     if ( lednumber < 0 || lednumber > NUMBER_OF_LEDS-1 ) return;
 //     DDRB |= ( 1 << ( PB2 + lednumber ));    //Check the tutorial "Writing to a Pin". We know from the documentation on
 //                                             //the multifunctional shield that the LEDs start at PB2
@@ -64,37 +67,82 @@ int main(){
 
 // void lightUpLed ( int lednumber )    //Note: enabled LEDs light up immediately ( 0 = on )
 // {
+//     // printString("\nlightUpLed\n");
 //     if ( lednumber < 0 || lednumber > NUMBER_OF_LEDS-1 ) return;
 //     PORTB &= ~( 1 << ( PB2 + lednumber ));  //Check the tutorial on "Bit Operations" to know what happens in this line.
+//     // PORTB = 0b00000000;
 // }
+// // UP: 0, 1, 2, 3
+// // PORTB => 0b0000 0000  --> currently all PINS are ON by default when enabling them (DDRB) 
+// //     0 => 0b0000 0100  (~ NOT): currently: 0b1111 1011, (previous AND currently): 0b0000 0000 
+// //     1 => 0b0000 1100  (~ NOT): currently: 0b1111 0011, (previous AND currently): 0b0000 0000
+// //     2 => 0b0001 1100  (~ NOT): currently: 0b1110 0011, (previous AND currently): 0b0000 0000
+// //     3 => 0b0011 1100  (~ NOT): currently: 0b1100 0011, (previous AND currently): 0b0000 0000
+// // DOWN:  0, 1, 2, 3
+// // PORTB => 0b000 00000  --> currently all LEDs are ON
+// //     0 => 0b000 00100  --> OR: if something was off leave it, and turn OFF the first LED
+// //     1 => 0b000 01100  --> OR: if something was off leave it, and turn OFF second LED
+// //     2 => 0b000 11100  --> OR: if something was off leave it, and turn OFF third LED
+// //     3 => 0b001 11100  --> OR: if something was off leave it, and turn OFF fourth LED
+// // UP: 0, 1, 2, 3
+// // PORBT => 0b0011 1100  --> after DOWN cycle this is the current state of PORTB, (all LEDs are OFF)
+// //     0 => 0b0000 0100  (~ NOT): currently: 0b1111 1011, (previous AND currently): 0b0011 1000
 
-// void lightDownLed ( int lednumber )
-// {
+
+
+// void lightDownLed ( int lednumber ) {
+//     // printString("\nlightDownLed\n");
 //     if ( lednumber < 0 || lednumber > 3 ) return;
 //     PORTB |= ( 1 << ( PB2 + lednumber ));   //Make sure you understand this line as well!
 // }
 
+// // 0, 1, 2, 3
+// // PORTB => 0b00000000  --> currently all LEDs are ON
+// //     0 => 0b00000100  --> OR: if something was off leave it, and turn OFF the first LED
+// //     1 => 0b00001100  --> OR: if something was off leave it, and turn OFF second LED
+// //     2 => 0b00011100  --> OR: if something was off leave it, and turn OFF third LED
+// //     3 => 0b00111100  --> OR: if something was off leave it, and turn OFF fourth LED
+
 // int main()
 // {
+//     initUSART();
 //     for ( int i = 0; i < 4; i++ )
 //     {
 //         enableLed(i);
+//         printf("\nenabling LED: %d with DDRB: ", i);
+//         printBinaryByte( DDRB );
+//         printf("\n");
 //     }
 //     while (1)
 //     {
+//         printString("\nWhile loop started");
 //         for ( int i = 0; i < 4; i++ )
 //         {
 //             lightUpLed(i);
-//             _delay_ms( 100 );
+//             _delay_ms( 1000 );
+
+//             printf("\nlightning UP led: %d with PORTB: ", i+1);
+//             printBinaryByte( PORTB );
+//             printf("\n");
 //         }
 //         for ( int i = 0; i < 4; i++ )
 //         {
 //             lightDownLed(i);
-//             _delay_ms( 100 );
+//             _delay_ms( 1000 );
+
+//             printf("\nlightning DOWN led: %d with PORTB: ", i+1);
+//             printBinaryByte( PORTB );
+//             printf("\n");
 //         }
+//         // break;
 //     }
 //     return 0;
 // }
+
+
+
+
+
 
 
 
@@ -251,6 +299,7 @@ int main()
 //             printf( " - Button 0 NOT pressed!!\n" );
 //         }
 //         _delay_ms( 1000 );
+//     break;
 //     }
 // }
  
