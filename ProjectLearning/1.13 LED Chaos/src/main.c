@@ -3,9 +3,7 @@
 #include <LEDs.h>
 
 int main() {
-  enableAllLeds();
   ledChaos();
-  
 
   return 0;
 }
@@ -14,7 +12,7 @@ int main() {
 
 
 
-//testing random number generator
+// // // testing random number generator
 
 // #include <stdio.h>
 // #include <stdlib.h>
