@@ -11,10 +11,6 @@ void pauseSeconds(int seconds) {
     _delay_ms(seconds * 1000);
 }
 
-void disableAllLEDs(void) {
-    DDRB = 0b00000000;
-}
-
 void enableOneLed(int LEDnumber) {
     DDRB |= (1 << (LEDnumber+1));
     lightDownAllLeds();
@@ -25,7 +21,7 @@ void enableMultipleLeds(uint8_t byte) {
     lightDownAllLeds();
 }
 
-void enableAllLeds(void) {
+void enableAllLeds() {  // also make it work better
     DDRB = 0b00111100;
     lightDownAllLeds();
 }
@@ -42,8 +38,8 @@ void lightUpMultipleLeds(uint8_t byte) {
     PORTB = byte;
 }
 
-void lightUpAllLeds(void) {
-    PORTB = 0b00000000;
+void lightUpAllLeds() {
+    PORTB = 0b11000011; // change it not mess up with th other LEDS
 }
 
 void lightDownOneLed(int LED) {
@@ -54,7 +50,7 @@ void lightDownMultipleLeds(uint8_t byte) {
     PORTB = byte;
 }
 
-void lightDownAllLeds(void) {
+void lightDownAllLeds() { // make it using pb...
     PORTB = 0b00111100;
 }
 
@@ -69,37 +65,27 @@ void lightToggleOneLed(int LED) {
 }
 
 void dimLed(int lednumber, int percentage, int duration) {
+    initUSART();
+    enableAllLeds();
     int lightOffDuration = percentage / 10;
-    
-    // long startTime = millis();
-    // while (1) { //(millis() - startTime <= duration) {
-    //     // printf("startTime: %d\n", startTime);
-    //     lightUpOneLed(lednumber);
-    //     _delay_ms(10-lightOffDuration);
-    //     lightDownOneLed(lednumber);
-    //     _delay_ms(lightOffDuration);
-        
-    // } 
 
     int lightOnDuration = 10-lightOffDuration;
     for (int i = 0; i<(duration*70); i++) {
-        // printf("%d\n", i);
-                  lightUpOneLed(lednumber);
-                for (int j = 0; j < (10 - lightOffDuration); j++) {
-            _delay_ms(1); // Delay for 1 millisecond
-        }
-                lightDownOneLed(lednumber);
-                 for (int j = 0; j < lightOffDuration; j++) {
-            _delay_ms(1); // Delay for 1 millisecond
-        }
+            lightUpOneLed(lednumber);
+        // for (int j = 0; j < (10 - lightOffDuration); j++) {
+            _delay_ms(1);
+        // }
+            lightDownOneLed(lednumber);
+        // for (int j = 0; j < lightOffDuration; j++) {
+            _delay_ms(1);
+        // }
     }
-    // printf("finished counting");
 }
 
 void fadeInLed(int led, int duration) {
     for (int i = 0; i <= 100; i++) {
         dimLed(led, i, duration);
-        _delay_ms(2000);
+        // _delay_ms(2000);
     }
 }
 
@@ -107,11 +93,11 @@ void fadeInLed(int led, int duration) {
 void fadeOutLed(int led, int duration) {
     for (int i = 100; i >= 0; i--) {
         dimLed(led, 99, duration);
-        _delay_ms(200);
+        // _delay_ms(200);
     }
 }
 
-void ledChaos(void) {
+void ledChaos() {
     enableAllLeds();
     do {
         int randomLedGenerated = rand() % 4 + 1;
@@ -126,7 +112,7 @@ void ledChaos(void) {
     } while (1);
 }
 
-void consecutiveLightUp(void) {
+void consecutiveLightUp() {
     printf("\nStarting Consecutive Light Up (inifinite loop)!\n");
 
     initUSART();
@@ -204,7 +190,7 @@ void walkThroughArrayLightLed() {
     printf("\nwalkThroughArrayLightLed() Done!\n");
 }
 
-void randomDurationForRandomLed(void) {
+void randomDurationForRandomLed() {
     initUSART();
     enableAllLeds();
     int randomDurations[10] = {};
@@ -238,22 +224,22 @@ void lightUpLedsBasedOnString(const char *letters) {
     enableAllLeds();
     for (int i = 0; i<size; i++) {
         if (letters[i] == 'a') {
-        lightToggleOneLed(1);
+        lightUpOneLed(1);
         _delay_ms(100);
         lightDownOneLed(1);
         _delay_ms(100);
         } else if (letters[i] == 'b') {
-        lightToggleOneLed(2);
+        lightUpOneLed(2);
         _delay_ms(100);
         lightDownOneLed(2);
         _delay_ms(100);
         } else if (letters[i] == 'c') {
-        lightToggleOneLed(3);
+        lightUpOneLed(3);
         _delay_ms(100);
         lightDownOneLed(3);
         _delay_ms(100);
         } else if (letters[i] == 'd') {
-        lightToggleOneLed(4);
+        lightUpOneLed(4);
         _delay_ms(100);
         lightDownOneLed(4);
         _delay_ms(100);
@@ -315,44 +301,26 @@ void lightUpAllLedsBasedOnRandomStringXAmountOfTimes() {
             lightDownAllLeds();
             _delay_ms(100);
         } else if (str[e] == 'b') {
-            lightUpAllLeds();
-            _delay_ms(100);
-            lightDownAllLeds();
-            _delay_ms(100);
-            lightUpAllLeds();
-            _delay_ms(100);
-            lightDownAllLeds();
-            _delay_ms(100);
+            for (int i = 0; i < 2; i++) {
+                lightUpAllLeds();
+                _delay_ms(100);
+                lightDownAllLeds();
+                _delay_ms(100);
+            }
         } else if (str[e] == 'c') {
-            lightUpAllLeds();
-            _delay_ms(100);
-            lightDownAllLeds();
-            _delay_ms(100);
-            lightUpAllLeds();
-            _delay_ms(100);
-            lightDownAllLeds();
-            _delay_ms(100);
-            lightUpAllLeds();
-            _delay_ms(100);
-            lightDownAllLeds();
-            _delay_ms(100);
-        } else if (str[e] == 'd') {
-            lightUpAllLeds();
-            _delay_ms(100);
-            lightDownAllLeds();
-            _delay_ms(100);
-            lightUpAllLeds();
-            _delay_ms(100);
-            lightDownAllLeds();
-            _delay_ms(100);
-            lightUpAllLeds();
-            _delay_ms(100);
-            lightDownAllLeds();
-            _delay_ms(100);
-            lightUpAllLeds();
-            _delay_ms(100);
-            lightDownAllLeds();
-            _delay_ms(100);
+            for (int i = 0; i < 3; i++) {
+                lightUpAllLeds();
+                _delay_ms(100);
+                lightDownAllLeds();
+                _delay_ms(100);
+            }
+        } else if (str[e] == 'd') { // for loop
+            for (int i = 0; i < 4; i++) {
+                lightUpAllLeds();
+                _delay_ms(100);
+                lightDownAllLeds();
+                _delay_ms(100);
+            }    
         } 
     }
     

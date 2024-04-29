@@ -8,12 +8,11 @@
 // #include <time.h>
 
 int main() {
-  initUSART();
-  enableAllLeds();
   // lightUpAllLeds();
   // lightUpOneLed(1);
 
-  dimLed(2, 99, 5);
+  // dimLed(2, 99, 5);
+  lightUpOneLed(4);
 
 // only dim workf not fade
 

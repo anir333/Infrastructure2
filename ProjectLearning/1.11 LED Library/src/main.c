@@ -27,8 +27,6 @@ pauseSeconds(1);
 pauseSeconds(1);
     lightToggleOneLed(3);
 
-// this is a change
-
   return 0;
 }
 
