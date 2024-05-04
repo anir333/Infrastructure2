@@ -4,7 +4,8 @@
 #include <LEDs.h>
 
 
-int main(){
+int main() {
+    
     enableOneLed(2);
 pauseSeconds(1);
     enableMultipleLeds(0b00111100); 
@@ -26,7 +27,7 @@ pauseSeconds(1);
     lightUpAllLeds();
 pauseSeconds(1);
     lightToggleOneLed(3);
-
+ 
   return 0;
 }
 

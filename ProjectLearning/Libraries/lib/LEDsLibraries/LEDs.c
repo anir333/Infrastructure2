@@ -7,7 +7,6 @@
 #include <usart.h>
 #include <myOwnlib.h>
 
-
 /* fix the lightDownMultipleLeds and also the up one, and the light up one led and others to make them ONLY CHANGE THE LEDs not the other four bits (first two and last two) */
 
 void pauseSeconds(int seconds) {
@@ -15,7 +14,8 @@ void pauseSeconds(int seconds) {
 }
 
 void enableOneLed(int LEDnumber) {
-    DDRB |= (1 << (LEDnumber+1));
+    if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS - 1 ) return;
+    DDRB |= (1 << (PB1 + LEDnumber));
     lightDownAllLeds();
 }
 
@@ -24,81 +24,84 @@ void enableMultipleLeds(uint8_t byte) {
     lightDownAllLeds();
 }
 
-void enableAllLeds() {  // also make it work better
-    DDRB = 0b00111100;
+void enableAllLeds() {
+    DDRB |= 0b00111100;
     lightDownAllLeds();
 }
 
-void lightUpOneLed(int LED) {
-    PORTB &= ~(1 << (LED+1));
-}
-
-void lightUpOneLedONLY(int LED) {
-    PORTB = ~(1 << (LED+1));
+void lightUpOneLed(int LEDnumber) {
+    if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return;
+    PORTB &= ~(1 << (PB1 + LEDnumber));
 }
 
 void lightUpMultipleLeds(uint8_t byte) {
-    PORTB = byte;
+    uint8_t mask = 0b00111100;
+
+    PORTB &= ~mask;
+
+    PORTB |= (byte & mask);
 }
 
 void lightUpAllLeds() {
-    PORTB = 0b11000011; // change it not mess up with th other LEDS
+    PORTB &= 0b11000011;
 }
 
-void lightDownOneLed(int LED) {
-    PORTB |= (1 << (LED+1));
+void lightDownOneLed(int LEDnumber) {
+    if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return;
+    PORTB |= (1 << (PB1 + LEDnumber));
 }
 
 void lightDownMultipleLeds(uint8_t byte) {
-    PORTB = byte;
+    uint8_t mask = 0b00111100;
+
+    PORTB &= ~(byte & mask);
 }
 
-void lightDownAllLeds() { // make it using pb...
-    PORTB = 0b00111100;
+void lightDownAllLeds() { // correct version (it doesn't mess up with other pins, it makes sure onyl the LEDs are set to 1)
+    PORTB &= 0b11000011;
+    PORTB |= 0b00111100;
 }
 
-void lightToggleOneLed(int LED) {
+void lightToggleOneLed(int LEDnumber) {
+    if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return;
     uint8_t previousPORTB = PORTB; 
 
-    lightDownOneLed(LED);
+    lightDownOneLed(LEDnumber);
 
     if (previousPORTB == PORTB) {
-        lightUpOneLed(LED);
+        lightUpOneLed(LEDnumber);
     }
 }
 
-void dimLed(int lednumber, int percentage, int duration) {
-    initUSART();
-    enableAllLeds();
+void dimLed(int lednumber, int percentage, long duration) {
     int lightOffDuration = percentage / 10;
 
     int lightOnDuration = 10-lightOffDuration;
-    for (int i = 0; i<(duration*70); i++) {
+    for (int i = 0; i<(duration*500); i++) {
             lightUpOneLed(lednumber);
-        // for (int j = 0; j < (10 - lightOffDuration); j++) {
-            _delay_ms(1);
-        // }
+            _delay_ms(lightOnDuration);
             lightDownOneLed(lednumber);
-        // for (int j = 0; j < lightOffDuration; j++) {
-            _delay_ms(1);
-        // }
-    }
-}
-
-void fadeInLed(int led, int duration) {
-    for (int i = 0; i <= 100; i++) {
-        dimLed(led, i, duration);
-        // _delay_ms(2000);
+            _delay_ms(lightOffDuration);
     }
 }
 
 
-void fadeOutLed(int led, int duration) {
-    for (int i = 100; i >= 0; i--) {
-        dimLed(led, 99, duration);
-        // _delay_ms(200);
+
+void fadeInLed(int ledNumber, long duration) {
+    for (long i = 0; i <= duration * 500; i++) {
+        int percentage = (i * 100) / (duration * 500);
+        dimLed(ledNumber, percentage, 1);
     }
 }
+
+
+void fadeOutLed(int ledNumber, long duration) {
+    for (long i = duration * 500; i >= 0; i--) {
+        int percentage = (i * 100) / (duration * 500);
+        dimLed(ledNumber, percentage, 1);
+    }
+}
+
 
 void ledChaos() {
     enableAllLeds();
@@ -121,22 +124,14 @@ void consecutiveLightUp() {
     initUSART();
     enableAllLeds();
     while (1) {
-        lightUpOneLed(1);
-        _delay_ms(100);
-        lightUpOneLed(2);
-        _delay_ms(100);
-        lightUpOneLed(3);
-        _delay_ms(100);
-        lightUpOneLed(4);
-        _delay_ms(100);
-        lightDownOneLed(1);
-        _delay_ms(100);
-        lightDownOneLed(2);
-        _delay_ms(100);
-        lightDownOneLed(3);
-        _delay_ms(100);
-        lightDownOneLed(4);
-        _delay_ms(100);
+        for (int i = 1; i<=4; i++) {
+            lightUpOneLed(i);
+            _delay_ms(100);
+        }
+        for (int i = 1; i<=4; i++) {
+            lightDownOneLed(i);
+            _delay_ms(100);
+        }
     }
 }
 

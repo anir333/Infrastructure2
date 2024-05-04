@@ -4,42 +4,36 @@
 #include <usart.h>
 #include <avr/io.h>
 #include <stdio.h>
-// #include <myOwnlib.h>
-// #include <'My Own Libraries'/myOwnlib.h>
 
 
 #define getSizeOfArray(array) (sizeof(array) / sizeof(array[0]))
 
 int main() {
+  enableAllLeds();
+  lightUpAllLeds();
+pauseSeconds(1);
 
   lightUpOneLedNTimes(3, 2);
-
-  _delay_ms(1000);
+pauseSeconds(1);
 
   makeLedBurnLonger(4);
+pauseSeconds(1);
 
-  _delay_ms(1000);
-  
   walkThroughArrayLightLed();
-
-  _delay_ms(1000);
+pauseSeconds(1);
 
   randomDurationForRandomLed();
+pauseSeconds(1);
 
-  _delay_ms(1000);
- 
   lightUpLedsBasedOnString("abcdabdcdacbdabdcdbadcdaaabcdc");
-
-  _delay_ms(1000);
+pauseSeconds(1);
 
   char characters[14] = {'a', 'b', 'c', 'd', 'a', 'c', 'd', 'b', 'a', 'b', 'd', 'c', 'a', 'd'};
   lightUpLedsBasedOnArrayOfChars(characters, 14);
-
-  _delay_ms(1000);
+pauseSeconds(1);
 
   lightUpAllLedsBasedOnRandomStringXAmountOfTimes();
-
-  _delay_ms(1000);
+pauseSeconds(1);
 
   consecutiveLightUp(); // when this is executed, it will not execute anything after it since its an infinite while loop to light up the lights consecutively
 
