@@ -7,7 +7,6 @@
 int main() {
     
     enableOneLed(2);
-pauseSeconds(1);
     enableMultipleLeds(0b00111100); 
 pauseSeconds(1);
     enableAllLeds ();
