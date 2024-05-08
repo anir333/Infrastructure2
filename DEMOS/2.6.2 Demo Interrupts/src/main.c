@@ -4,7 +4,6 @@
 #include <LEDs.h>
 #include <button.h>
 
-
 #define LED_PORT PORTB
 #define BUTTON_PORT PORTC
 #define BUTTON_PIN PINC
