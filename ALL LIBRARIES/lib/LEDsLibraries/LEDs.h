@@ -1,4 +1,7 @@
+#define LED_DDR DDRB
+#define LED_PORT PORTB
 #define NUMBER_OF_LEDS 4
+
 
 /* Pauses the program running for specified number of seconds */
 void pauseSeconds(int seconds);
@@ -94,5 +97,8 @@ void lightUpLedsBasedOnArrayOfChars(char string[], int);
 } */
 void lightUpAllLedsBasedOnRandomStringXAmountOfTimes();
 
-/* Toggles up and down the led specified and waits for the duration specified (used to improve code readability on some of my methods) */
+/* Toggles up and down the led specified and waits for the duration specified (used to improve code readability in some of my methods) */
 void lightUpAndDownLED(int, int);
+
+/* Lights Up and Down all led's for specified duration of time (used to improve readability in my methods) */
+void lightUpAndDownAllLEDs( int durationMS );

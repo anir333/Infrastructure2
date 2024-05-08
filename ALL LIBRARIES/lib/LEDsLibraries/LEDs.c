@@ -7,68 +7,66 @@
 #include <usart.h>
 #include <registersLib.h>
 
-/* fix the lightDownMultipleLeds and also the up one, and the light up one led and others to make them ONLY CHANGE THE LEDs not the other four bits (first two and last two) */
-
 void pauseSeconds(int seconds) {
     _delay_ms(seconds * 1000);
 }
 
 void enableOneLed(int LEDnumber) {
     if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS - 1 ) return;
-    DDRB |= (1 << (PB1 + LEDnumber));
+    LED_DDR |= (1 << (PB1 + LEDnumber));
     lightDownAllLeds();
 }
 
 void enableMultipleLeds(uint8_t byte) {
-    DDRB |= byte;
+    LED_DDR |= byte;
     lightDownAllLeds();
 }
 
 void enableAllLeds() {
-    DDRB |= 0b00111100;
+    LED_DDR |= 0b00111100;
     lightDownAllLeds();
 }
 
 void lightUpOneLed(int LEDnumber) {
     if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return;
-    PORTB &= ~(1 << (PB1 + LEDnumber));
+    LED_PORT &= ~(1 << (PB1 + LEDnumber));
 }
 
 void lightUpMultipleLeds(uint8_t byte) {
     uint8_t mask = 0b00111100;
 
-    PORTB &= ~mask;
+    LED_PORT &= ~mask;
 
-    PORTB |= (byte & mask);
+    LED_PORT |= (byte & mask);
 }
 
 void lightUpAllLeds() {
-    PORTB &= 0b11000011;
+    LED_PORT &= 0b11000011;
 }
 
 void lightDownOneLed(int LEDnumber) {
     if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return;
-    PORTB |= (1 << (PB1 + LEDnumber));
+    LED_PORT |= (1 << (PB1 + LEDnumber));
 }
 
 void lightDownMultipleLeds(uint8_t byte) {
     uint8_t mask = 0b00111100;
 
-    PORTB &= ~(byte & mask);
+    LED_PORT &= ~(byte & mask);
 }
 
 void lightDownAllLeds() { // correct version (it doesn't mess up with other pins, it makes sure onyl the LEDs are set to 1)
-    PORTB &= 0b11000011;
-    PORTB |= 0b00111100;
+    LED_PORT &= 0b11000011;
+    LED_PORT |= 0b00111100;
 }
 
 void lightToggleOneLed(int LEDnumber) {
     if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return;
-    uint8_t previousPORTB = PORTB; 
+    uint8_t previousLED_PORT = LED_PORT; 
 
     lightDownOneLed(LEDnumber);
 
-    if (previousPORTB == PORTB) {
+    if (previousLED_PORT == LED_PORT) {
         lightUpOneLed(LEDnumber);
     }
 }
@@ -263,30 +261,18 @@ void lightUpAllLedsBasedOnRandomStringXAmountOfTimes() {
     for (int e  = 0; e<randLengthOfString; e++) {
         pauseSeconds(1);
         if (str[e] == 'a') {
-            lightUpAllLeds();
-            _delay_ms(100);
-            lightDownAllLeds();
-            _delay_ms(100);
+            lightUpAndDownAllLEDs( 100 );
         } else if (str[e] == 'b') {
             for (int i = 0; i < 2; i++) {
-                lightUpAllLeds();
-                _delay_ms(100);
-                lightDownAllLeds();
-                _delay_ms(100);
+                lightUpAndDownAllLEDs( 100 );
             }
         } else if (str[e] == 'c') {
             for (int i = 0; i < 3; i++) {
-                lightUpAllLeds();
-                _delay_ms(100);
-                lightDownAllLeds();
-                _delay_ms(100);
+                lightUpAndDownAllLEDs( 100 );
             }
         } else if (str[e] == 'd') { // for loop
             for (int i = 0; i < 4; i++) {
-                lightUpAllLeds();
-                _delay_ms(100);
-                lightDownAllLeds();
-                _delay_ms(100);
+                lightUpAndDownAllLEDs( 100 );
             }    
         } 
     }
@@ -294,9 +280,16 @@ void lightUpAllLedsBasedOnRandomStringXAmountOfTimes() {
     printf("\nlightUpAllLedsBasedOnRandomStringXAmountOfTimes() Done!\n");
 }
 
-void lightUpAndDownLED(int LEDnumber, int durationMS) {
-    lightToggleOneLed(LEDnumber);
-    _delay_ms(durationMS);
-    lightToggleOneLed(LEDnumber);
-    _delay_ms(durationMS);
+void lightUpAndDownLED( int LEDnumber, int durationMS ) {
+    lightToggleOneLed( LEDnumber );
+    _delay_ms( durationMS );
+    lightToggleOneLed( LEDnumber );
+    _delay_ms( durationMS );
+}
+
+void lightUpAndDownAllLEDs( int durationMS ) {
+    lightUpAllLeds();
+    _delay_ms( durationMS );
+    lightDownAllLeds();
+    _delay_ms( durationMS );
 }
