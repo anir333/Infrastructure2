@@ -55,4 +55,6 @@ int activateInterrumptForButton( int button ) {
     printf("\nActivating interrumpt system globally...");
     activateInterruptSystemGlobally;
     printf("\n -> sie activated globally");
+
+    while (1);
 }

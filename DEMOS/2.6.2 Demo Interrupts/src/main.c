@@ -1,45 +1,3 @@
-// // main.c
-// #include <stdio.h>
-// #include <avr/io.h>
-// #include <util/delay.h>
-// #include "button.h"
-
-// #define LED_DDR DDRD
-// #define LED_PORT PORTD
-// #define LED_PIN PD7
-
-// int main() {
-//     // Initialize LED pin as output
-//     LED_DDR |= _BV(LED_PIN);
-    
-//     // Enable button connected to pin PC0
-//     enableButton(1);
-    
-//     // Main loop
-//     while (1) {
-//         // Check if button is pushed
-//         if (buttonPushed(1)) {
-//             // Button is pushed, turn on the LED
-//             writePin(&LED_PORT, LED_PIN, HIGH);
-            
-//             // Send message to serial monitor
-//             printf("Button is pushed!\n");
-//         } else {
-//             // Button is released, turn off the LED
-//             writePin(&LED_PORT, LED_PIN, LOW);
-            
-//             // Send message to serial monitor
-//             printf("Button is released!\n");
-//         }
-        
-//         // Delay for debounce or polling
-//         _delay_ms(100);
-//     }
-    
-//     return 0;
-// }
-
-
 #include <util/delay.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -85,11 +43,9 @@ int main() {
     enableOneLed(2);
     enableButton(1);
 
+    // will start an infinite loop:
     activateInterrumptForButton(1);
-    while ( 1 )
-    {
-        lightUpAndDownLED( 1 , 100 );
-    }
+
     return 0;
 }
 

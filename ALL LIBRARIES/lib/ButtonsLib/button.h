@@ -30,5 +30,5 @@ int buttonPushed( int button );
 /* Checks if buttons is not pushed */
 int buttonReleased( int button );
 
-/* It activates the interrupt for PCICR for the Buttons Port (PCIE1), then it it indicates the pin of the specified button in PORTC to activate the ISR, and finally it enables the interrupts and activates the interrupt system globally */ 
+/* It activates the interrupt for PCICR for the Buttons Port (PCIE1), then it it indicates the pin of the specified button in PORTC to activate the ISR, it enables the interrupts and activates the interrupt system globally, and finally, starts an infinite while loop to detect buttons without finishing the program */ 
 int activateInterrumptForButton( int button );
