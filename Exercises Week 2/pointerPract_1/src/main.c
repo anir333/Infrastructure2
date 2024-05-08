@@ -3,14 +3,14 @@
 #define SEVENFOLD(num) (num * 7)
 
 void printArray(int array[]);
-void makeArray(int array[]);
+void makeArray(int* array);
 
 int main() {
     int array[MAX] = {0}; 
 
     printArray(array);
     makeArray(array);
-    printArray(array);
+    printArray(&array[0]);
 
     return 0;
 }
@@ -22,7 +22,7 @@ void printArray(int array[]) {
     }
 }
 
-void makeArray(int array[]) {
+void makeArray(int* array) {
     for (int i = 0; i < MAX; i++) {
         array[i] = SEVENFOLD(i);
     }
