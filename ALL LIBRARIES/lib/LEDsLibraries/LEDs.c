@@ -5,7 +5,7 @@
 #include <LEDs.h>
 #include <time.h>
 #include <usart.h>
-#include <myOwnlib.h>
+#include <registersLib.h>
 
 /* fix the lightDownMultipleLeds and also the up one, and the light up one led and others to make them ONLY CHANGE THE LEDs not the other four bits (first two and last two) */
 
