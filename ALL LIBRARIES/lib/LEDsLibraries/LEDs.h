@@ -56,10 +56,10 @@ void ledChaos(void);
 void consecutiveLightUp(void);
 
 /* Lights up the specified LED N number of times specified */
-void lightUpOneLedNTimes(int led, int numberOfFlashes);
+void lightUpOneLedNTimes(int, int);
 
 /* Makes the specified LED burn longer and longer starting at 10ms and incrementing by 50ms after every iteration untl reaching 100 ms */
-void makeLedBurnLonger(int led);
+void makeLedBurnLonger(int);
 
 /* It walks through an array of randomly generated integers (from 1 to 4 corresponding to the LEDs) and lights up the corresponding LED for 500 ms */
 void walkThroughArrayLightLed();
@@ -82,7 +82,7 @@ void lightUpLedsBasedOnString(const char *letters);
     'c' : (only) LED 3 lights up;
     'd' : (only) LED 4 lights up;
 } */
-void lightUpLedsBasedOnArrayOfChars(char string[], int size);
+void lightUpLedsBasedOnArrayOfChars(char string[], int);
 
 /* It creates a randomly generated string (with a random length from 1 to 10), containing the letters a, b, c or d;
     First it adds a ranodmly generated amount of times a random letter => (a, b, c, or d), then:
@@ -93,3 +93,6 @@ void lightUpLedsBasedOnArrayOfChars(char string[], int size);
     'd' : ALL 4 LEDs light up FOUR TIMES;
 } */
 void lightUpAllLedsBasedOnRandomStringXAmountOfTimes();
+
+/* Toggles up and down the led specified and waits for the duration specified (used to improve code readability on some of my methods) */
+void lightUpAndDownLED(int, int);

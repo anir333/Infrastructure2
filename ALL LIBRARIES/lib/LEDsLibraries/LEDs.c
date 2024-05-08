@@ -73,32 +73,35 @@ void lightToggleOneLed(int LEDnumber) {
     }
 }
 
-void dimLed(int lednumber, int percentage, long duration) {
+void dimLed(int LEDnumber, int percentage, long duration) {
+    if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return;
     int lightOffDuration = percentage / 10;
 
     int lightOnDuration = 10-lightOffDuration;
     for (int i = 0; i<(duration*500); i++) {
-            lightUpOneLed(lednumber);
-            _delay_ms(lightOnDuration);
-            lightDownOneLed(lednumber);
-            _delay_ms(lightOffDuration);
+        lightUpOneLed(LEDnumber);
+        _delay_ms(lightOnDuration);
+        lightDownOneLed(LEDnumber);
+        _delay_ms(lightOffDuration);
     }
 }
 
 
 
-void fadeInLed(int ledNumber, long duration) {
+void fadeInLed(int LEDnumber, long duration) {
+    if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return;
     for (long i = 0; i <= duration * 500; i++) {
         int percentage = (i * 100) / (duration * 500);
-        dimLed(ledNumber, percentage, 1);
+        dimLed(LEDnumber, percentage, 1);
     }
 }
 
 
-void fadeOutLed(int ledNumber, long duration) {
+void fadeOutLed(int LEDnumber, long duration) {
+    if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return;
     for (long i = duration * 500; i >= 0; i--) {
         int percentage = (i * 100) / (duration * 500);
-        dimLed(ledNumber, percentage, 1);
+        dimLed(LEDnumber, percentage, 1);
     }
 }
 
@@ -135,29 +138,25 @@ void consecutiveLightUp() {
     }
 }
 
-void lightUpOneLedNTimes(int led, int numberOfFlashes) {
+void lightUpOneLedNTimes(int LEDnumber, int numberOfFlashes) {
+    if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return;
     initUSART();
-    enableOneLed(led);
+    enableOneLed(LEDnumber);
     for (int i = 0; i<numberOfFlashes; i++) {
-        lightUpOneLed(led);
-        _delay_ms(1000);
-        lightDownOneLed(led);
-        _delay_ms(1000);
+        lightUpAndDownLED(LEDnumber, 1000);
     }
 
     printf("\nlightUpOneLedNTimes() Done!\n");
 }
 
-void makeLedBurnLonger(int led) {
+void makeLedBurnLonger(int LEDnumber) {
+    if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return;
     initUSART();
-    enableOneLed(led);
+    enableOneLed(LEDnumber);
     int i = 0;
     int burningTime = 10;
     while (i<=20) { // 100/50 = 20 iterations
-        lightUpOneLed(led);
-        _delay_ms(burningTime);
-        lightDownOneLed(led);
-        _delay_ms(burningTime);
+        lightUpAndDownLED(LEDnumber, burningTime);
 
         // printf("buring time: %d and iteration: %d\n", burningTime, i);
         burningTime += (i == 0) ? 40 : 50;
@@ -179,10 +178,7 @@ void walkThroughArrayLightLed() {
     }
 
     for (int i = 0; i<getSizeOfArray(digits); i++) {
-        lightUpOneLed(digits[i]);
-        _delay_ms(500);
-        lightDownOneLed(digits[i]);
-        _delay_ms(500);
+        lightUpAndDownLED(digits[i], 500);
     }
 
     printf("\nwalkThroughArrayLightLed() Done!\n");
@@ -202,10 +198,7 @@ void randomDurationForRandomLed() {
     for (int e = 0; e<getSizeOfArray(randomDurations); e++) {
         int randomLED = rand() % 4 + 1;
         // printf("lighting up LED: %d during: %d ms\n", randomLED, randomDurations[e]);
-        lightToggleOneLed(randomLED);
-        _delay_ms(randomDurations[e]);
-        lightToggleOneLed(randomLED);
-        _delay_ms(randomDurations[e]);
+        lightUpAndDownLED(randomLED, randomDurations[e]);
     }
 
     printf("\nrandomDurationForRandomLed() Done!\n");
@@ -222,25 +215,13 @@ void lightUpLedsBasedOnString(const char *letters) {
     enableAllLeds();
     for (int i = 0; i<size; i++) {
         if (letters[i] == 'a') {
-        lightUpOneLed(1);
-        _delay_ms(100);
-        lightDownOneLed(1);
-        _delay_ms(100);
+          lightUpAndDownLED(1, 100);
         } else if (letters[i] == 'b') {
-        lightUpOneLed(2);
-        _delay_ms(100);
-        lightDownOneLed(2);
-        _delay_ms(100);
+          lightUpAndDownLED(2, 100);
         } else if (letters[i] == 'c') {
-        lightUpOneLed(3);
-        _delay_ms(100);
-        lightDownOneLed(3);
-        _delay_ms(100);
+          lightUpAndDownLED(3, 100);
         } else if (letters[i] == 'd') {
-        lightUpOneLed(4);
-        _delay_ms(100);
-        lightDownOneLed(4);
-        _delay_ms(100);
+          lightUpAndDownLED(4, 100);
         }
     }
 
@@ -253,25 +234,13 @@ void lightUpLedsBasedOnArrayOfChars(char chars[], int size) {
     enableAllLeds();
     for (int i = 0; i<size; i++) {
         if (chars[i] == 'a') {
-        lightToggleOneLed(1);
-        _delay_ms(100);
-        lightDownOneLed(1);
-        _delay_ms(100);
+          lightUpAndDownLED(1, 100);
         } else if (chars[i] == 'b') {
-        lightToggleOneLed(2);
-        _delay_ms(100);
-        lightDownOneLed(2);
-        _delay_ms(100);
+          lightUpAndDownLED(2, 100);
         } else if (chars[i] == 'c') {
-        lightToggleOneLed(3);
-        _delay_ms(100);
-        lightDownOneLed(3);
-        _delay_ms(100);
+          lightUpAndDownLED(3, 100);
         } else if (chars[i] == 'd') {
-        lightToggleOneLed(4);
-        _delay_ms(100);
-        lightDownOneLed(4);
-        _delay_ms(100);
+          lightUpAndDownLED(4, 100);
         }
     }
 
@@ -323,4 +292,11 @@ void lightUpAllLedsBasedOnRandomStringXAmountOfTimes() {
     }
     
     printf("\nlightUpAllLedsBasedOnRandomStringXAmountOfTimes() Done!\n");
+}
+
+void lightUpAndDownLED(int LEDnumber, int durationMS) {
+    lightToggleOneLed(LEDnumber);
+    _delay_ms(durationMS);
+    lightToggleOneLed(LEDnumber);
+    _delay_ms(durationMS);
 }
