@@ -76,13 +76,10 @@ void lightDownAllLeds() { // correct version (it doesn't mess up with other pins
 
 void lightToggleOneLed(int LEDnumber) {
     if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return;
-    uint8_t previousLED_PORT = LED_PORT; 
-
-    lightDownOneLed(LEDnumber);
-
-    if (previousLED_PORT == LED_PORT) {
-        lightUpOneLed(LEDnumber);
-    }
+    
+    if ( isLEDon( LEDnumber ) ) {
+        lightDownOneLed( LEDnumber );
+    } else lightUpOneLed( LEDnumber );
 }
 
 void dimLed(int LEDnumber, int percentage, long duration) {
