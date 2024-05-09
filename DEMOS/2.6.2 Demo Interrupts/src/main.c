@@ -43,7 +43,7 @@ int main() {
     enableButton(1);
 
     // will start an infinite loop:
-    activateInterrumptForButton(1, true);
+    enableButtonInterrupt(1, true);
 
     return 0;
 }

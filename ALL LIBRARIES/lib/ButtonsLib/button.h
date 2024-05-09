@@ -25,6 +25,9 @@ void writePin(volatile uint8_t *regist, uint8_t pin, uint8_t value);
 /* Sets data directiong register of button (to 0) for input and activates the pull-up resistor */
 void enableButton( int button );
 
+/* enableButton() for buttons 1, 2 & 3 */
+void enableAllButtons();
+
 /* Checks if bit is clear on specified button */
 int buttonPushed( int button );
 
@@ -32,4 +35,7 @@ int buttonPushed( int button );
 int buttonReleased( int button );
 
 /* It activates the interrupt for PCICR for the Buttons Port (PCIE1), then it it indicates the pin of the specified button in PORTC to activate the ISR, it enables the interrupts and activates the interrupt system globally, and finally, if a true is passed in it starts an infinite while loop to detect buttons without finishing the program */ 
-int activateInterrumptForButton( int button, bool startWhile );
+int enableButtonInterrupt( int button, bool startWhile );
+
+/* enableButtonInterrupt() for buttons 1, 2 & 3 */
+void enableAllButtonInterrupts( bool startWhile );

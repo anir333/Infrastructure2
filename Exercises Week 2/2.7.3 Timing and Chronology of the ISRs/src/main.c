@@ -25,10 +25,8 @@ int main() {
     initUSART();
     enableAllLeds();
 
-    enableButton(1);
-    activateInterrumptForButton(1, false);
-    enableButton(2);
-    activateInterrumptForButton(2, false);
+    enableButtonInterrupt(1, false);
+    enableButtonInterrupt(2, false);
 
     while (1) {
         lightUpOneLed(1);

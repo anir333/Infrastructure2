@@ -17,9 +17,9 @@ void writePin(volatile uint8_t *regist, uint8_t pin, uint8_t value) {
 }
 
 void enableButton(int button) {
+       if (button < 1 || button > 3) return;
     initUSART();
     printf("\n\n\n ENABLING BUTTON %d", button);
-    if (button < 1 || button > 3) return;
     
     printf("\n\nbutton ddr before enabling:");
     printBinaryByte(BUTTON_DDR);
@@ -36,9 +36,15 @@ void enableButton(int button) {
     printf("\n\nButton %d enabled and pull-up resistor activated\n", button);
 }
 
+void enableAllButtons() {
+    enableButton(1);
+    enableButton(2);
+    enableButton(3);
+}
+
 int buttonPushed(int button) {
+       if (button < 1 || button > 3) return;
     initUSART();
-    if (button < 1 || button > 3) return 0;
     
     if (bit_is_clear(BUTTON_PIN, (FIRST_PIN + button))) {
         printf("\nBUTTON %d PUSHED\n", button);
@@ -46,14 +52,18 @@ int buttonPushed(int button) {
 }
 
 int buttonReleased(int button) {
-    if (button < 1 || button > 3) return 0;
+        if (button < 1 || button > 3) return 0;
 
     if ( !buttonPushed(button) ) {
         printf("\nBUTTON RELEASED!\n");
     } return !buttonPushed(button);
 }
 
-int activateInterrumptForButton( int button, bool startWhile ) {
+int enableButtonInterrupt( int button, bool startWhile ) {
+       if (button < 1 || button > 3) return 0;
+
+    enableButton(button);
+
     printf("\n\nActivating PCICR for PCIE1: ");
     INTERRUPT_BUTTONS |= _BV( CONTROL_REGISTER_BUTTONS );
     printBinaryByte(INTERRUPT_BUTTONS);
@@ -69,4 +79,10 @@ int activateInterrumptForButton( int button, bool startWhile ) {
     if (startWhile) {
         while (1);
     }
+}
+
+void enableAllButtonInterrupts( bool startWhile ) {
+    enableButtonInterrupt(1, startWhile);
+    enableButtonInterrupt(2, startWhile);
+    enableButtonInterrupt(3, startWhile);
 }
