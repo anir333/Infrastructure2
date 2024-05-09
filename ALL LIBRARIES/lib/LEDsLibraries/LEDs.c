@@ -52,7 +52,9 @@ void lightDownOneLed(int LEDnumber) {
 void lightDownMultipleLeds(uint8_t byte) {
     uint8_t mask = 0b00111100;
 
-    LED_PORT &= ~(byte & mask);
+    LED_PORT &= ~mask;
+
+    LED_PORT |= (byte & mask);
 }
 
 void lightDownAllLeds() { // correct version (it doesn't mess up with other pins, it makes sure onyl the LEDs are set to 1)
