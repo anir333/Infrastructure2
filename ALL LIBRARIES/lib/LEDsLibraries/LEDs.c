@@ -6,9 +6,21 @@
 #include <time.h>
 #include <usart.h>
 #include <registersLib.h>
+#include <stdbool.h>
 
 void pauseSeconds(int seconds) {
     _delay_ms(seconds * 1000);
+}
+
+bool isLEDon( int LEDnumber ) {
+    if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return false;
+    uint8_t previousLED_PORT = LED_PORT; 
+
+    lightDownOneLed(LEDnumber);
+
+    if (previousLED_PORT == LED_PORT) {
+        return false;
+    } else return true;
 }
 
 void enableOneLed(int LEDnumber) {
@@ -294,4 +306,10 @@ void lightUpAndDownAllLEDs( int durationMS ) {
     _delay_ms( durationMS );
     lightDownAllLeds();
     _delay_ms( durationMS );
+}
+
+void flashLight( int LEDnumber, int durationMS ) {
+    while (1) {
+        lightUpAndDownLED( LEDnumber, durationMS);
+    }
 }

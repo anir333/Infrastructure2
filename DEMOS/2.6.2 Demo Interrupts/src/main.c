@@ -42,8 +42,11 @@ int main() {
     enableOneLed(2);
     enableButton(1);
 
-    // will start an infinite loop:
-    enableButtonInterrupt(1, true);
+    enableButtonInterrupt(1);
+
+    while (1) {
+        flashLight(1, 100);
+    }
 
     return 0;
 }

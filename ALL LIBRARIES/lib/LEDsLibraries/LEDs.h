@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #define LED_DDR DDRB
 #define LED_PORT PORTB
 #define NUMBER_OF_LEDS 4
@@ -5,6 +6,9 @@
 
 /* Pauses the program running for specified number of seconds */
 void pauseSeconds(int seconds);
+
+/* Returns true if LED specified is ON or false if it's OFF */
+bool isLEDon( int LEDnumber );
 
 /* 
 Enables specified LED (does not overwrite => uses OR |) 
@@ -35,7 +39,7 @@ void lightDownOneLed(int);
 
 /* Lights down specified LEDs */
 // Turn off the specified LEDs by setting their corresponding bits to 1 if they were on, otherwise leave them unchanged
-void lightDownMultipleLeds (uint8_t);
+void lightDownMultipleLeds(uint8_t);
 
 /* It lights down all the LEDs without changing the state of the other pins (it make ssure only the LEDs pins are set to 1) */
 void lightDownAllLeds(void); 
@@ -102,3 +106,6 @@ void lightUpAndDownLED(int, int);
 
 /* Lights Up and Down all led's for specified duration of time (used to improve readability in my methods) */
 void lightUpAndDownAllLEDs( int durationMS );
+
+/* Lights up and down the specified LED with the specified duration on an infinite while loop */
+void flashLight( int LEDnumber, int durationMS );

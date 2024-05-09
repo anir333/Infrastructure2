@@ -1,4 +1,5 @@
 #include <button.h>
+#include <LEDs.h>
 
 ISR( PCINT1_vect ) {
     if (buttonPushed(1)) {
@@ -25,8 +26,8 @@ int main() {
     initUSART();
     enableAllLeds();
 
-    enableButtonInterrupt(1, false);
-    enableButtonInterrupt(2, false);
+    enableButtonInterrupt(1);
+    enableButtonInterrupt(2);
 
     while (1) {
         lightUpOneLed(1);

@@ -1,8 +1,6 @@
 #include <button.h>
 #include <stdio.h>
 #include <avr/io.h>
-#include <LEDs.h>
-
 
 void writeMask(volatile uint8_t *registr, uint8_t value) {
     *registr = value;
@@ -59,7 +57,7 @@ int buttonReleased(int button) {
     } return !buttonPushed(button);
 }
 
-int enableButtonInterrupt( int button, bool startWhile ) {
+int enableButtonInterrupt( int button ) {
        if (button < 1 || button > 3) return 0;
 
     enableButton(button);
@@ -75,14 +73,10 @@ int enableButtonInterrupt( int button, bool startWhile ) {
     printf("\nActivating interrumpt system globally...");
     activateInterruptSystemGlobally;
     printf("\n -> sie activated globally");
-
-    if (startWhile) {
-        while (1);
-    }
 }
 
-void enableAllButtonInterrupts( bool startWhile ) {
-    enableButtonInterrupt(1, startWhile);
-    enableButtonInterrupt(2, startWhile);
-    enableButtonInterrupt(3, startWhile);
+void enableAllButtonInterrupts() {
+    enableButtonInterrupt(1);
+    enableButtonInterrupt(2);
+    enableButtonInterrupt(3);
 }
