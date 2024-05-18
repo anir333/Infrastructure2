@@ -117,9 +117,35 @@ void randomMorseCodeLEDsGenerator() {
         while(continueLoop);
     } else {
         printf("\n------------------------------------------------------\n");
+        printf("\n Showing Morse Code of a passed in String...\n");
+        showMorseCodeOfString( "thisisaphrase123950" );
         printf("\n\n\nFinishing program with an LED dance!\n");
         ledChaos(); // infiniter while loop
         // exit(0);
+    }
+}
+
+void showMorseCodeOfString( char string[] ) {
+    for (int i = 0; i < strlen(string); i++) {
+        for (int e = 0; e<37; e++) {
+            if (string[i] == morseCodeArray[e].character) {
+                printPatternOfMorseCode( morseCodeArray[e] );
+                makeLEDsShowMorseCode( morseCodeArray[e] );
+                pauseSeconds(1);
+            }
+        }
+    }
+}
+
+void printPatternOfMorseCode( MORSECODE character ) {
+    int i = 0;
+    int ledDurationLength = character.LEDsPattern[i];
+
+    printf("\n\nPattern for character: %c: ", character.character);
+    while ( ledDurationLength != 0 ) { // to printf the pattern
+        printf("%c ", ( ( character.LEDsPattern[i] == 1 ) ? '.' : ( character.LEDsPattern[i] == 2 ?'-' : ';') ));
+        i++;
+        ledDurationLength = character.LEDsPattern[i];
     }
 }
 
@@ -127,13 +153,6 @@ void makeLEDsShowMorseCode( MORSECODE character ) {
     int i = 0;
     int ledDurationLength = character.LEDsPattern[i];
 
-    while ( ledDurationLength != 0 ) { // to printf the pattern first
-        i++;
-        ledDurationLength = character.LEDsPattern[i];
-    }
-
-    i = 0;
-    ledDurationLength = character.LEDsPattern[i];
     while ( ledDurationLength != 0 ) {
         if ( ledDurationLength == 1 ) {
             lightUpAllLeds();
