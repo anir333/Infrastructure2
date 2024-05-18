@@ -44,7 +44,6 @@ int buttonPushed(int button) {
     
     if (bit_is_clear(BUTTON_PIN, (FIRST_PIN + button))) {
         _delay_us(500); // debouncing
-        printf("\nBUTTON %d PUSHED\n", button);
     } return bit_is_clear(BUTTON_PIN, (FIRST_PIN + button));
 }
 

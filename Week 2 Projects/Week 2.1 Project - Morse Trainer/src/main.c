@@ -1,10 +1,9 @@
 #include <LEDs.h>
 #include <button.h>
 #include <stdio.h> 
-#include <stdlib.h>  // for rand() method
+#include <stdlib.h>
 #include <stdbool.h>
 #include <usart.h>
-#include <time.h>
 
 
 int iteration = 0;
