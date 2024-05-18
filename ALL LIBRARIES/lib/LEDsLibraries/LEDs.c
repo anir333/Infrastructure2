@@ -133,7 +133,6 @@ void ledChaos() {
 void consecutiveLightUp() {
     printf("\nStarting Consecutive Light Up (inifinite loop)!\n");
 
-    initUSART();
     enableAllLeds();
     while (1) {
         for (int i = 1; i<=4; i++) {
@@ -149,7 +148,7 @@ void consecutiveLightUp() {
 
 void lightUpOneLedNTimes(int LEDnumber, int numberOfFlashes) {
     if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return;
-    initUSART();
+
     enableOneLed(LEDnumber);
     for (int i = 0; i<numberOfFlashes; i++) {
         lightUpAndDownLED(LEDnumber, 1000);
@@ -160,7 +159,7 @@ void lightUpOneLedNTimes(int LEDnumber, int numberOfFlashes) {
 
 void makeLedBurnLonger(int LEDnumber) {
     if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return;
-    initUSART();
+
     enableOneLed(LEDnumber);
     int i = 0;
     int burningTime = 10;
@@ -177,7 +176,6 @@ void makeLedBurnLonger(int LEDnumber) {
 }
 
 void walkThroughArrayLightLed() {
-    initUSART();
     enableAllLeds();
     int digits[10] = {};
 
@@ -194,7 +192,6 @@ void walkThroughArrayLightLed() {
 }
 
 void randomDurationForRandomLed() {
-    initUSART();
     enableAllLeds();
     int randomDurations[10] = {};
 
@@ -214,7 +211,6 @@ void randomDurationForRandomLed() {
 }
 
 void lightUpLedsBasedOnString(const char *letters) {
-    initUSART();
 
     int size = 0;
     while (letters[size] != '\0') {
@@ -238,7 +234,6 @@ void lightUpLedsBasedOnString(const char *letters) {
 }
 
 void lightUpLedsBasedOnArrayOfChars(char chars[], int size) {
-    initUSART();
 
     enableAllLeds();
     for (int i = 0; i<size; i++) {
@@ -257,7 +252,6 @@ void lightUpLedsBasedOnArrayOfChars(char chars[], int size) {
 }
 
 void lightUpAllLedsBasedOnRandomStringXAmountOfTimes() {
-    initUSART();
     enableAllLeds();
     char possibleCharactersToLightUpLeds[] = {'a', 'b', 'c', 'd'};
     
@@ -312,7 +306,7 @@ void flashLight( int LEDnumber, int durationMS ) {
 }
 
 void countDownLEDs() {
-    initUSART();
+    printf("\nBeginning LEDs countdown...\n");
     enableAllLeds();
 
     lightUpMultipleLeds(0b00000000);
@@ -326,5 +320,5 @@ void countDownLEDs() {
     lightDownAllLeds();
     pauseSeconds(1);
 
-    printf("Finished LEDs countdown!");
+    printf("\nFinished LEDs countdown!\n");
 }

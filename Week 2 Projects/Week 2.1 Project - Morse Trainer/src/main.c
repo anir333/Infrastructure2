@@ -2,9 +2,16 @@
 #include <button.h>
 #include <stdio.h> 
 #include <stdlib.h>  // For rand()
+#include <stdbool.h>
+#include <usart.h>
 
 int iteration = 0;
 int answer = 0;
+int score = 0;
+bool continueLoop = true;
+int optionA = -1;
+int optionB = -1;
+int optionC = -1;
 
 typedef struct {
     char character;
@@ -53,91 +60,154 @@ const MORSECODE morseCodeArray[37] = {
 
 ISR ( PCINT1_vect ) {
     if ( buttonPushed(1) ) {
-            _delay_us (500);
-            printf("\n\nButton 1 pushed!\n\n");
+        iteration++;
+        _delay_us (500); // debounce
+    
+        showScoreAndSolution(1);
 
-        pauseSeconds(1);
-        main();
-        // something happens
+        continueLoop = (iteration < 5);
+        randomMorseCodeLEDsGenerator();
 
-    } else {
-         printf("\n\nButton 1 NOT pushed!\n\n");
     }
-    // if ( buttonPushed(3) ) {
-    //     // something happens
-    // }
-    // if ( buttonPushed(3) ) {
-    //     // something happens
-    // }
+    if ( buttonPushed(2) ) {
+        iteration++;
+        _delay_us (500); // debounce
+    
+        showScoreAndSolution(2);
+
+        continueLoop = (iteration < 5);
+        randomMorseCodeLEDsGenerator();
+    }
+    if ( buttonPushed(3) ) {
+        iteration++;
+        _delay_us (500); // debounce
+    
+        showScoreAndSolution(3);
+
+        continueLoop = (iteration < 5);
+        randomMorseCodeLEDsGenerator();
+    }
 }
 
 int main() {
     initUSART();
 
-    // countDownLEDs();
+    enableAllLeds();
+
+    countDownLEDs();
 
     enableAllButtons();
     enableAllButtonInterrupts();
-
-    printf("\n\nSize of MORSECODE: %d\n\n", sizeof(morseCodeArray));
-
-
-    programChecker();
     
-    // do { iteration ++;
-    //     printf("\n\n\n MAIN LOOP iteration: %d \n\n\n", iteration);
-    //     randomMorseCodeLEDsGenerator();
-
-    // } while ( iteration <= 5 );
+    randomMorseCodeLEDsGenerator();
 
     return 0;
 }
 
-void programChecker() {
-    if (iteration < 6) {
-        iteration++;
+void randomMorseCodeLEDsGenerator() {
+    if (continueLoop) {
+        int randomCharacterPosition = rand() % 37;
 
-        printf("\n\n\n MAIN LOOP iteration: %d \n\n\n", iteration);
-        randomMorseCodeLEDsGenerator();
+        makeLEDsShowMorseCode( morseCodeArray[randomCharacterPosition] );
+        printf("\n------------------------------------------------------\n");
+        printf("\n\n\n-> Question %d:", iteration+1);
+        printOptions( morseCodeArray[randomCharacterPosition], randomCharacterPosition );
 
+        enableAllButtonInterrupts();
+        while(continueLoop);
     } else {
-        printf("\n finishing program\n");
-        ledChaos();
+        printf("\n------------------------------------------------------\n");
+        printf("\n\n\nFinishing program with an LED dance!\n");
+        ledChaos(); // infiniter while loop
+        // exit(0);
     }
 }
 
-
-void randomMorseCodeLEDsGenerator() {
-    srand(time(NULL)); // to avoid patterns on the random number generator and improve uniqueness of each position number generated
-    int randomCharacterPosition = rand() % 37;
-
-    makeLEDsShowMorseCode( morseCodeArray[randomCharacterPosition] );
-
-    printOptions( morseCodeArray[randomCharacterPosition] );
-
-    // while (!buttonPushed(1)) {
-    //     printf("\n button 1 not pushed yet \n\n");
-    //     pauseSeconds(1);
-    // }
-
-    // printf("\n\n button 1 pushed finishing program!\n\n");
-    // while (1); // to wait for button input
-    // while (1) {
-    //     if (buttonPushed(1)) {
-    //         _delay_us (500);
-    //         printf("\n\nButton 1 pushed!\n\n");
-    //     } else {
-    //         printf("\n\nButton 1 NOT pushed!\n\n");
-    //     }
-
-    //     pauseSeconds(1);
-    // }
-}
-
 void makeLEDsShowMorseCode( MORSECODE character ) {
-    
+    int i = 0;
+    int ledDurationLength = character.LEDsPattern[i];
+
+    while ( ledDurationLength != 0 ) { // to printf the pattern first
+        i++;
+        ledDurationLength = character.LEDsPattern[i];
+    }
+
+    i = 0;
+    ledDurationLength = character.LEDsPattern[i];
+    while ( ledDurationLength != 0 ) {
+        if ( ledDurationLength == 1 ) {
+            lightUpAllLeds();
+            _delay_ms ( 250 );
+            lightDownAllLeds();
+            _delay_ms ( 100 );
+        } else if ( ledDurationLength == 2 ) {
+            lightUpAllLeds();
+            pauseSeconds(1.5);
+            lightDownAllLeds();
+            _delay_ms ( 100 );
+        }
+        
+        i++;
+        ledDurationLength = character.LEDsPattern[i];
+    } 
 }
 
-void printOptions( MORSECODE correctAnswer ) {
+void printOptions(MORSECODE correctAnswer, int indexOfCorrectAnswer) {
+    printf("\nThinking...\n");
+    int randomOptionForCorrectAnswer = rand() % 3 + 1;
+    optionA = -1;
+    optionB = -1;
+    optionC = -1;
 
+    if (randomOptionForCorrectAnswer == 1) {
+        answer = 1;
+        optionA = indexOfCorrectAnswer;
+    } else if (randomOptionForCorrectAnswer == 2) {
+        answer = 2;
+        optionB = indexOfCorrectAnswer;
+    } else if (randomOptionForCorrectAnswer == 3) {
+        answer = 3;
+        optionC = indexOfCorrectAnswer;
+    }
+
+    while (1) {
+        if ( randomOptionForCorrectAnswer == 1 ) {
+            optionB = rand() % 37;
+            optionC = rand() % 37;    
+        } else if ( randomOptionForCorrectAnswer == 2 ) {
+            optionA = rand() % 37;
+            optionC = rand() % 37;
+        } else if ( randomOptionForCorrectAnswer == 3 ) {
+            optionA = rand() % 37;
+            optionB = rand() % 37;
+        }
+
+        // printf("\n\n OPTION A: %d, OPTION B: %d, OPTION C: %d", optionA, optionB, optionC);
+
+        if ((optionA != optionB) && (optionA != optionC) && (optionB != optionC))
+            break;
+    }
+
+    printf("\n-> GIVEN THE LED PATTERN THAT WAS SHOWN \n");
+    printf("    CLICK A BUTTON TO CHOOSE AN ANSWER: \n");
+    printf("{ Button 1 == A; Button 2 == B; Button 3 == C }\n");
+    printf("\n A) %c\n", morseCodeArray[optionA].character);
+    printf("\n B) %c\n", morseCodeArray[optionB].character);
+    printf("\n C) %c\n\n\n", morseCodeArray[optionC].character);
+}
+
+void showScoreAndSolution(int selectedAnswer) {
+    bool answeredCorrectly = (answer == selectedAnswer);
+
+    printf("\n\nYOU CHOSE ANSWER: %c) %c\n", (selectedAnswer == 1 ? 'A' : (selectedAnswer == 2 ? 'B' : 'C')), morseCodeArray[(selectedAnswer == 1 ? optionA : (selectedAnswer == 2 ? optionB : optionC))].character);
+    printf("YOUR ANSWER IS %s\n", (answeredCorrectly ? "CORRECT!" : "INCORRECT!"));
+
+    if (!answeredCorrectly) {
+        printf("-> THE CORRECT ANSWER IS: %c) %c\n", (answer == 1 ? 'A' : (answer == 2 ? 'B' : 'C')), morseCodeArray[(answer == 1 ? optionA : (answer == 2 ? optionB : optionC))].character);
+    }
+    if (answeredCorrectly) {
+        score += 50;
+    }
+
+    printf("YOUR CURRENT SCORE IS: %d\n", score);
 }

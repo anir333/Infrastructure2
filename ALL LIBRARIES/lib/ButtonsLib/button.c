@@ -16,22 +16,21 @@ void writePin(volatile uint8_t *regist, uint8_t pin, uint8_t value) {
 
 void enableButton(int button) {
        if (button < 1 || button > 3) return;
-    initUSART();
-    printf("\n\n\n ENABLING BUTTON %d", button);
+    // printf("\n\n\n ENABLING BUTTON %d", button);
     
-    printf("\n\nbutton ddr before enabling:");
-    printBinaryByte(BUTTON_DDR);
+    // printf("\n\nbutton ddr before enabling:");
+    // printBinaryByte(BUTTON_DDR);
     BUTTON_DDR &= ~_BV(FIRST_PIN + button);
-    printf("\n\nbutton ddr AFTER enabling:");
-    printBinaryByte(BUTTON_DDR);
+    // printf("\n\nbutton ddr AFTER enabling:");
+    // printBinaryByte(BUTTON_DDR);
 
-    printf("\n\nbutton port before enabling:");
-    printBinaryByte(BUTTON_PORT);
+    // printf("\n\nbutton port before enabling:");
+    // printBinaryByte(BUTTON_PORT);
     BUTTON_PORT |= _BV(FIRST_PIN + button);
-    printf("\n\nbutton port after enabling:");
-    printBinaryByte(BUTTON_PORT);
+    // printf("\n\nbutton port after enabling:");
+    // printBinaryByte(BUTTON_PORT);
 
-    printf("\n\nButton %d enabled and pull-up resistor activated\n", button);
+    // printf("\n\nButton %d enabled and pull-up resistor activated\n", button);
 }
 
 void enableAllButtons() {
@@ -42,7 +41,6 @@ void enableAllButtons() {
 
 int buttonPushed(int button) {
        if (button < 1 || button > 3) return;
-    initUSART();
     
     if (bit_is_clear(BUTTON_PIN, (FIRST_PIN + button))) {
         _delay_us(500); // debouncing
@@ -64,17 +62,17 @@ int enableButtonInterrupt( int button ) {
 
     enableButton(button);
 
-    printf("\n\nActivating PCICR for PCIE1: ");
+    // printf("\n\nActivating PCICR for PCIE1: ");
     INTERRUPT_BUTTONS |= _BV( CONTROL_REGISTER_BUTTONS );
-    printBinaryByte(INTERRUPT_BUTTONS);
+    // printBinaryByte(INTERRUPT_BUTTONS);
 
-    printf("\nActivating pin of button %d to activate the ISR: ", button);
+    // printf("\nActivating pin of button %d to activate the ISR: ", button);
     MASK_BUTTONS |= _BV( FIRST_PIN + button );
-    printBinaryByte(MASK_BUTTONS);
+    // printBinaryByte(MASK_BUTTONS);
 
-    printf("\nActivating interrumpt system globally...");
+    // printf("\nActivating interrumpt system globally...");
     activateInterruptSystemGlobally;
-    printf("\n -> sie activated globally");
+    // printf("\n -> sie activated globally");
 }
 
 void enableAllButtonInterrupts() {
