@@ -1,9 +1,11 @@
 #include <LEDs.h>
 #include <button.h>
 #include <stdio.h> 
-#include <stdlib.h>  // For rand()
+#include <stdlib.h>  // for rand() method
 #include <stdbool.h>
 #include <usart.h>
+#include <time.h>
+
 
 int iteration = 0;
 int answer = 0;
@@ -13,6 +15,7 @@ int optionA = -1;
 int optionB = -1;
 int optionC = -1;
 
+// structs were tought in the 5th week but I decided to use them for this project to improve efficiency and readability
 typedef struct {
     char character;
     int LEDsPattern[6]; // longest pattern for morse code is 5, plus 0 byte at the end
@@ -119,7 +122,7 @@ void randomMorseCodeLEDsGenerator() {
         printf("\n------------------------------------------------------\n");
         printf("\n Showing Morse Code of a passed in String...\n");
         showMorseCodeOfString( "thisisaphrase123950" );
-        printf("\n\n\nFinishing program with an LED dance!\n");
+        printf("\n\n\nFinishing program with a LED dance!\n");
         ledChaos(); // infiniter while loop
         // exit(0);
     }
