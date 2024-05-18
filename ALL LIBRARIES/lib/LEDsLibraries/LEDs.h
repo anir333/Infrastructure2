@@ -109,3 +109,6 @@ void lightUpAndDownAllLEDs( int durationMS );
 
 /* Lights up and down the specified LED with the specified duration on an infinite while loop */
 void flashLight( int LEDnumber, int durationMS );
+
+/* Makes a simple countdown with the LEDs (first lights up the 4 LEDs for a second, then lights up three LEDs for a second, and so on until reaching 0) */
+void countDownLEDs();

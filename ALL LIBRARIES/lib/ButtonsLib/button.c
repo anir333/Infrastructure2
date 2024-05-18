@@ -45,6 +45,7 @@ int buttonPushed(int button) {
     initUSART();
     
     if (bit_is_clear(BUTTON_PIN, (FIRST_PIN + button))) {
+        _delay_us(500); // debouncing
         printf("\nBUTTON %d PUSHED\n", button);
     } return bit_is_clear(BUTTON_PIN, (FIRST_PIN + button));
 }
@@ -56,6 +57,7 @@ int buttonReleased(int button) {
         printf("\nBUTTON RELEASED!\n");
     } return !buttonPushed(button);
 }
+
 
 int enableButtonInterrupt( int button ) {
        if (button < 1 || button > 3) return 0;

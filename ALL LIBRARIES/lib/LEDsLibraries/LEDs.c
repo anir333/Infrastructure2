@@ -310,3 +310,21 @@ void flashLight( int LEDnumber, int durationMS ) {
         lightUpAndDownLED( LEDnumber, durationMS);
     }
 }
+
+void countDownLEDs() {
+    initUSART();
+    enableAllLeds();
+
+    lightUpMultipleLeds(0b00000000);
+    pauseSeconds(1);
+    lightUpMultipleLeds(0b00100000);
+    pauseSeconds(1);
+    lightUpMultipleLeds(0b0110000);
+    pauseSeconds(1);
+    lightUpMultipleLeds(0b00111000);
+    pauseSeconds(1);
+    lightDownAllLeds();
+    pauseSeconds(1);
+
+    printf("Finished LEDs countdown!");
+}
