@@ -1,7 +1,7 @@
 #include <LEDs.h>
 #include <button.h>
 #include <stdio.h> 
-#include <stdlib.h>
+#include <stdlib.h>  // For rand()
 #include <stdbool.h>
 #include <usart.h>
 
@@ -101,6 +101,7 @@ int main() {
     enableAllButtons();
     enableAllButtonInterrupts();
     
+    srand(35);
     randomMorseCodeLEDsGenerator();
 
     return 0;
