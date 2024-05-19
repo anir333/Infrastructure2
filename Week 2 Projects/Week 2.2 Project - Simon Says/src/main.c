@@ -4,10 +4,10 @@
 #include <usart.h>
 #include <stdlib.h>  // for rand() method
 
-#define MAX_LEVEL 10
+#define MAX_LEVEL 10 // CURRENTLY BY DEFAULT THERE ARE 10 LEVELS, CHANGE THE NUMBER OF LEVELS HERE TO TEST THE GAME WITH LESS LEVELS
 
 /* UNCOMMENT THE FOLLOWING LINE TO SEE THE PATTERN GENERATED (ONLY FOR TESTING PURPOSES) */
-#define PRINT_PUZZLE_GENERATED
+// #define PRINT_PUZZLE_GENERATED
 
 int ledCounter = 0;
 bool gameStarted = false;
@@ -18,7 +18,7 @@ int numOfButtonClicks = 0;
 
 ISR ( PCINT1_vect ) {
     if ( buttonPushed(1) ) {
-        _delay_us (1000);
+        _delay_us (100);
         if ( !gameStarted ) {
             gameStarted = true;
             
@@ -35,7 +35,7 @@ ISR ( PCINT1_vect ) {
         }
     }
     if ( gameStarted && buttonPushed(2) ) {
-        _delay_us (1000);
+        _delay_us (100);
         lightUpOneLed(2);
         if (puzzle[numOfButtonClicks] == 2) {
             printf("\nYou pressed button 2, correct!\n"); 
@@ -46,7 +46,7 @@ ISR ( PCINT1_vect ) {
         lightDownOneLed(2);
     }
     if ( gameStarted && buttonPushed(3) ) {
-        _delay_us (1000);
+        _delay_us (100);
         lightUpOneLed(3);
         if (puzzle[numOfButtonClicks] == 3) {
             printf("\nYou pressed button 3, correct!\n"); 
@@ -68,13 +68,13 @@ int main() {
     printf("\n\n\n\t -> Click Button 1 to start the game!\n");
     printf("\n\t -> RULES: Every time you start a new level, a pattern of lights will show.\n\t The length of this pattern will increase on each level!\n");
     printf("\n\t-> After the pattern of lights Simon shows, all 4 LEDs will make a consecutive light up and down to let you know that you can start clicking the buttons to figure out the pattern previously shown by the LEDs!\n");
-    printf("\n\t -> Once you guess the pattern correctly on all 10 levels, you will become the Simon Master!");
+    printf("\n\t -> Once you guess the pattern correctly on all %d levels, you will become the Simon Master!", MAX_LEVEL);
+    printf("\nClick the buttons fast to not have problems with debouncing!");
 
 
     while ( !gameStarted ) {
         lightUpAndDownLED( 4, 100 );
         ledCounter++;
-        // printf("\nIteration\n");
         lightDownAllLeds();
     }
 
@@ -119,17 +119,16 @@ void startGame() {
             printf("%d ", puzzle[i]);
         }
         #endif
-        // printf("\nSize of puzzle: %d\n", sizeof(MAX_LEVEL));
-        printf("\n\t-> SHOWING LED PATTERN, WAIT UNTIL FINISHED...\n");
+
+        printf("\n\t-> Showing LED pattern, wait until finished...\n");
         lightUpLEDsPatternPuzzle( puzzle, 650 ); // light up the LEDs according to the puzzle randomly created, and on top of that I can make it faster for each level to increase level difficulty by changing 650 to (3000/level)
-        printf("\t\t-> LED PATTERN FINISHED! YOU CAN START CLICKING THE BUTTONS!\n");    
+        printf("\t\t-> LED PATTERN FINISHED! You can start clicking the buttons!\n");    
     
         level += checkerButtonEngine();
         if ( level > MAX_LEVEL ) break;
-        // printf("next level: %d", level);
     }
 
-    printf("\n\n ALL 10 LEVEL COMPLETED! You're now the SIMON MASTER!\n");
+    printf("\n\n ALL %d LEVELS COMPLETED! You're now the SIMON MASTER!\n", MAX_LEVEL);
     exit(0);
 }
 
@@ -152,39 +151,39 @@ int checkerButtonEngine() {
     lightDownOneLed(4);
 
     numOfButtonClicks=0;
-    // printf("\nchecker engine started, num of button clicks is: %d\n", numOfButtonClicks);
     enableAllButtonInterrupts();
     while (numOfButtonClicks < level) {
-        // printf("\nnumber of buttons clicekd: %d", numOfButtonClicks);
         _delay_ms(500);
     }
 
 
 
     int i = 0;
-        // printf("\n\n INCREASING LEVEL? : \n");
-        // printf("\nCHECK BUTTONS CLICKED VS PUZZLE: ");
     while ( puzzle[i] != 0 ) {
-        // printf("BUTTON: %d || PUZZLE: %d\n", buttonsClickedPattern[i], puzzle[i]);
-        
         if (puzzle[i] != buttonsClickedPattern[i]) {
-            // printf("\n\n SHOULD RETURN 0: %d", false);
+            for (int wrong = 0; wrong<4; wrong++) {
+                lightUpAndDownAllLEDs( 300 );
+            }        
+            printf("\n\n WRONG! THE PATTERN WAS [");
+            for (int i = 0; i<level; i++) {
+                if (i == level-1) printf("%d", puzzle[i]); else printf("%d, ", puzzle[i]);
+            } printf("]\n\n");
             return false;
             break;
-            // printf("\nSHOULDNT HAVE GOTTEN HERE 1\n");
         }
 
         i++;
     }
 
-    // printf("\nSHOULDNT HAVE GOTTEN HERE 2 unless correct clicks\n");
-
+    for (int correct = 0; correct<8; correct++) {
+        lightUpAndDownLED( 4, 100 );
+    }
+    if (level < MAX_LEVEL) printf("\n\n -> CORRECT WE GO TO LEVEL %d\n\n", level+1);
     return true;
 }
 
 void lightUpLEDsPatternPuzzle( int puzzle[], int duration ) {
     for (int i = 0; i < level; i++) {
-        // lightUpAndDownLED( puzzle[i], duration );
         lightUpOneLed( puzzle[i] );
         _delay_ms ( duration );
         lightDownOneLed( puzzle[i] );
