@@ -146,7 +146,7 @@ void printPatternOfMorseCode( MORSECODE character ) {
 
     printf("\n\nPattern for character: %c: ", character.character);
     while ( ledDurationLength != 0 ) { // to printf the pattern
-        printf("%c ", ( ( character.LEDsPattern[i] == 1 ) ? '.' : ( character.LEDsPattern[i] == 2 ?'-' : ';') ));
+        printf("%c ", ( ( character.     LEDsPattern[i] == 1 ) ? '.' : ( character.LEDsPattern[i] == 2 ?'-' : ';') ));
         i++;
         ledDurationLength = character.LEDsPattern[i];
     }
