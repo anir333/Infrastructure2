@@ -32,9 +32,6 @@ pauseSeconds(1);
 
 
 
-
-
-
 // Testing usart library :
 
 
