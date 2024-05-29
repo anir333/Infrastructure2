@@ -38,18 +38,18 @@ void turnDisplayOFF();
 #define EIGHT  0x80
 #define NINE   0x90
 
-#define A   0b11001000
-#define B   0x83
+#define A   0b10001000
+#define B   0B10000011
 #define C   0xC6
 #define D   0xA1
 #define E   0x86
 #define F   0x8E
 #define G   0xC2
 #define H   0x89
-#define I   0b11001111
-#define J   0x8C
-#define K   0xA7
-#define L   0xA8
+#define I   0b11111001
+#define J   0b11100001
+#define K   0b10001111
+#define L   0b11000111
 #define M   0xA1
 #define N   0b10001001
 #define O   0xC8
@@ -64,6 +64,11 @@ void turnDisplayOFF();
 #define X   0xC6
 #define Y   0x92
 #define Z   0x89
+
+void writeCharToSegment(uint8_t segment, char character);
+void writeString(char* str);
+void writeStringAndWait(char* str, int delay);
+
 
 
 // const uint8_t NUMBERS[] = {ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE }; 

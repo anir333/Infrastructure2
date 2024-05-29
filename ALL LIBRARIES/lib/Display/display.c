@@ -1,7 +1,9 @@
 #include "display.h"
-
 #include <avr/io.h>
 #include <util/delay.h>
+#include <string.h>
+
+#define SPACE 0xFF
 
 /* Segment byte maps for numbers 0 to 9 */
 const uint8_t SEGMENT_MAP[] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99,
@@ -9,6 +11,11 @@ const uint8_t SEGMENT_MAP[] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99,
 
 /* Byte maps to select digit 1 to 4 */
 const uint8_t SEGMENT_SELECT[] = {0xF1, 0xF2, 0xF4, 0xF8};
+
+const uint8_t ALPHABET_MAP[] = {0x88, 0x83, 0xC6, 0xA1, 0x86, 0x8E, 0xC2,
+                                0x89, 0xCF, 0xE1, 0x8A, 0xC7, 0xEA, 0xC8,
+                                0xC0, 0x8C, 0x4A, 0xCC, 0x92, 0x87, 0xC1,
+                                0xC1, 0xD5, 0x89, 0x91, 0xA4};
 
 
 void initDisplay() {
@@ -82,14 +89,39 @@ void writeNumberToSegmentAnir(uint8_t segment, uint8_t value) {
 }
 
 void turnDisplayOFF() {
-  while (1) {
-    writeNumberToSegmentAnir( FIRST_DIGIT, 0b11111111 );
+    writeNumberToSegmentAnir( FIRST_DIGIT, SPACE );
     _delay_ms(1);
-    writeNumberToSegmentAnir( SECOND_DIGIT, 0b11111111 );
+    writeNumberToSegmentAnir( SECOND_DIGIT, SPACE );
     _delay_ms(1);
-    writeNumberToSegmentAnir( THIRD_DIGIT, 0b11111111 );
+    writeNumberToSegmentAnir( THIRD_DIGIT, SPACE );
     _delay_ms(1);
-    writeNumberToSegmentAnir( FOURTH_DIGIT, 0b11111111 );
+    writeNumberToSegmentAnir( FOURTH_DIGIT, SPACE );
     _delay_ms(1);
+}
+
+void writeCharToSegment(uint8_t segment, char character) {
+  if ( character >= 'a' && character <= 'z' ) {
+    character -= 32;
+  }
+  
+  if ( character >= 'A' && character <= 'Z' ) {
+    writeNumberToSegmentAnir( segment, ALPHABET_MAP[character-65]);
+  } else {
+      writeNumberToSegment( segment, SPACE );
+  } 
+}
+
+void writeString(char* str) {
+  for (int i = 0; i < 4; i++) {
+      int segment = i == 0 ? FIRST_DIGIT : ( i == 1 ? SECOND_DIGIT : (i == 2 ? THIRD_DIGIT : (i == 3 ? FOURTH_DIGIT : 0)) );
+      writeCharToSegment( segment, *str);
+      str++;
+  }
+}
+
+void writeStringAndWait(char* str, int delay) {
+  int time = delay * 3;
+  for (int i = 0; i < time; i++) {
+    writeString(str);
   }
 }
