@@ -6,6 +6,11 @@
 #include <LCD.h>
 #include <display.h>
 
+
+
+
+
+
 ISR(PCINT1_vect) {
 
     if (buttonPushed(1)) {
@@ -56,6 +61,78 @@ int main() {
         // _delay_ms(100);
     }
 } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// int main(void) {
+//     initDisplay(); // Initialize the display
+//     displayFlashingP(); // Call the function to display the flashing sequence
+//     return 0; // This will never be reached because of the infinite loop
+// }
+
+
+
+// void displayFlashingP() {
+//     while (1) { // Infinite loop to keep the display repeating
+//         // Display "1P21"
+//         writeNumberToSegment(0, 1); // Display '1' on the first digit
+//         writeCharToSegment(1, 'P'); // Display 'P' on the second digit
+//         writeNumberToSegment(2, 2); // Display '2' on the third digit
+//         writeNumberToSegment(3, 1); // Display '1' on the fourth digit
+        
+//         _delay_ms(500); // Wait for 500 milliseconds (half a second)
+        
+//         // Turn off the second digit to make 'P' flash
+//         writeNumberToSegment(0, 1); // Display '1' on the first digit
+//         writeNumberToSegment(1, 0xFF); // Turn off the second digit
+//         writeNumberToSegment(2, 2); // Display '2' on the third digit
+//         writeNumberToSegment(3, 1); // Display '1' on the fourth digit
+        
+//         _delay_ms(500); // Wait for 500 milliseconds (half a second)
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // #include <stdlib.h>
