@@ -69,7 +69,7 @@ void writeCharToSegment(uint8_t segment, char character);
 void writeString(char* str);
 void writeStringAndWait(char* str, int delay);
 
-
+void blankSegment(uint8_t segment);
 
 // const uint8_t NUMBERS[] = {ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE }; 
 // const uint8_t LETTERS[] = {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z};

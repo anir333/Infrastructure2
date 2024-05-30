@@ -14,7 +14,7 @@ CAR car3 = { 2005, "Toyota", "C4" };
 int main() {
     initUSART();
 
-    printf("CAR 3 TYPE: %s\n", car3.type);
+    printf("\n\n\nCAR 3 TYPE: %s\n", car3.type);
 
     car1.year = 1998;
     printf("car year: %d\n", car1.year);
@@ -23,10 +23,14 @@ int main() {
 
     CAR newCar = { 1965, "Ford", "R4" };
     printf("NEW CAR: MODEL: %s,  YEAR: %d,  TYPE: %s", newCar.model, newCar.year, newCar.type);
+
+    printcar(&newCar);
     
     // copying a string to a variable (it takes each byte of the passed i n string and sets it to the variables)
     strcpy(newCar.model, "Scenic");
     printf("\nNew car model after copy: %s", newCar.model);
+
+    printf("\n SIze of CAR: %d", sizeof(CAR));
 
 
     /* 
@@ -46,4 +50,9 @@ int main() {
 
 
     return 0;
+}
+
+void printcar(CAR* car) {
+  printf("\n car: model: %s", (*car).model);
+  printf("\n car: model: %s", car->model);
 }
