@@ -14,6 +14,19 @@ void initADC()
     ADCSRA |= (1 << ADSC);                                // Start the analog-to-digital conversion
 }
 
+void initTimer2() { // 16 bit timer
+    //  Choose WAVE FORM/mode of operation
+    TCCR2A |= _BV(WGM20) | _BV(WGM21);  // WGM20 = 1 and WGM21 = 1 --> Fast PWM Mode
+
+    //   set a prescaler factor to 1024
+    TCCR2B |= _BV(CS22) | _BV(CS21) | _BV(CS20);
+
+    //  Enable interruts for 2 cases, overflow and comparator
+    TIMSK2 |= _BV(TOIE2) | _BV(OCIE2A);   // Set both TOIE2 and OCIE2A bits
+
+    activateInterruptSystemGlobally;
+}
+
 void initTimer0()
 {
     // STEP 1: choose the WAVE FORM and by consequence the Mode of Operation
@@ -30,17 +43,4 @@ void initTimer0()
     TIMSK0 |= _BV( OCIE0A );    // enable OCRA interrupt
 
     sei();  // enable interrupts globally
-}
-
-
-void initTIMER0() {
-    TCCR0A |= _BV(WGM00) | _BV(WGM01); // WGM00 = 1 and WGM01 = 1 --> Fast PWM Mode
-    TCCR0B |= _BV(CS02) | _BV(CS00); // CS02 = 1 and CS00 = 1 --> prescaler factor is now 1024
-}
-
-void enableTimer0Interrput() {
-    TIMSK0 |= _BV(TOIE0);   // enable overflow interrupt
-    TIMSK0 |= _BV(OCIE0A);  // enable OCRA interrupt
-
-    activateInterruptSystemGlobally;  // enable interrupts globally -> sei();
 }
