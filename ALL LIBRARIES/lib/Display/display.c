@@ -5,6 +5,8 @@
 
 #define SPACE 0xFF
 
+int numbersAnir[11] = { ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE };
+
 /* Segment byte maps for numbers 0 to 9 */
 const uint8_t SEGMENT_MAP[] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99,
                                0x92, 0x82, 0xF8, 0X80, 0X90};
@@ -55,7 +57,7 @@ void writeNumberToSegment(uint8_t segment, uint8_t value) {
   sbi(PORTD, LATCH_DIO);
 }
 
-//Writes a nuber between 0 and 9999 to the display. To be used in a loop...
+//Writes a number between 0 and 9999 to the display. To be used in a loop...
 void writeNumber(int number) {
   if (number < 0 || number > 9999) return;
   writeNumberToSegment(0, number / 1000);
@@ -84,6 +86,22 @@ void writeNumberAndWait(int number, int delay) {
 void writeNumberToSegmentAnir(uint8_t segment, uint8_t value) {
   cbi(PORTD, LATCH_DIO);
   shift(value, MSBFIRST);
+  shift(segment, MSBFIRST);
+  sbi(PORTD, LATCH_DIO);
+}
+
+void writeIntToSegmentAnir(uint8_t segment, uint8_t value) {
+  if (value < 0 || value > 9) return;
+
+  cbi(PORTD, LATCH_DIO);
+  shift(numbersAnir[value], MSBFIRST);
+  shift(segment, MSBFIRST);
+  sbi(PORTD, LATCH_DIO);
+}
+
+void writeIntToSegmentWithDotAnir(uint8_t segment, uint8_t value) {
+  cbi(PORTD, LATCH_DIO);
+  shift((numbersAnir[value] ^ 0b10000000), MSBFIRST);
   shift(segment, MSBFIRST);
   sbi(PORTD, LATCH_DIO);
 }

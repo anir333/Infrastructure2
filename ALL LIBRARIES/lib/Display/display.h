@@ -19,6 +19,7 @@ void writeNumberToSegment(uint8_t segment, uint8_t value);
 void writeNumber(int number);
 void writeNumberAndWait(int number, int delay);
 void writeNumberToSegmentAnir(uint8_t segment, uint8_t value);
+void writeIntToSegmentAnir(uint8_t segment, uint8_t value);
 void turnDisplayOFF();
 
 /* My own: */
@@ -37,6 +38,8 @@ void turnDisplayOFF();
 #define SEVEN  0xF8
 #define EIGHT  0x80
 #define NINE   0x90
+
+// int numbersAnir[11] = { ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE };
 
 #define A   0b10001000
 #define B   0B10000011
