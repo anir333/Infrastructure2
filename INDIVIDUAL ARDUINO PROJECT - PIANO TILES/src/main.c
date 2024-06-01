@@ -40,7 +40,7 @@ uint8_t gameStarted = false;
 uint8_t speedChosen = false;
 uint16_t speedMultiple = 250; // default 1 second speed but can change up to 500
 uint8_t continueGame = true;
-uint8_t generateTileNow = false;
+volatile uint8_t generateTileNow = true;//false;
 volatile unsigned long counter = 0;
 /* END of global variables */
 
@@ -111,21 +111,68 @@ void playGame(int* gameSpeedChosen) {
 
   srand(ACD); // seed the random generator with the speed level chosen (value read by potentiometer) to genuenly generate random tiles in every game
 
-  ROWS* game = malloc( sizeof(ROWS) );
-  game->rowOne = malloc( MAX_ROW_LENGTH + 1 );
-  (*game).rowTwo = malloc( MAX_ROW_LENGTH + 1 );
-  
-  while (continueGame) {
-    if (generateTileNow) generateTile(game);
-  }
 
-  // endGame(game); -> init usart and print things and turn LCD off but use display!
-  free(game);
+  ROWS* game = malloc(sizeof(ROWS));
+  game->rowOne = malloc(MAX_ROW_LENGTH + 1);
+  game->rowTwo = malloc(MAX_ROW_LENGTH + 1);
+  // ChatGPT helped me learn how to initialise all the values of an array of a pointer where memory has been dynamically allocated, with the memset function I initialise all values of game rows to ' ' in order to now have garbage data in those values, and then i make sure the array is finished with a \0 byte since with dynamic allocation this is not done automatically
+  memset(game->rowOne, ' ', MAX_ROW_LENGTH);
+  memset(game->rowTwo, ' ', MAX_ROW_LENGTH);
+  game->rowOne[MAX_ROW_LENGTH] = '\0';
+  game->rowTwo[MAX_ROW_LENGTH] = '\0';
+
+  // initUSART();
+  int volume = 0;
+  char strrr[10] = "";
+  // initUSART();
+  while (continueGame) {
+    // printf("\n gen tile now : %d\n", generateTileNow);
+    if (generateTileNow) {
+      volume++;
+      // sprintf(strrr, "%d", volume);
+      // updateLCDScreen(1, strrr, NONE, "");
+      // printf("\n volume is: %d\n", volume);
+      generateTile(game);
+      // generateTileNow = false;
+      // generateTileNow = false;
+      // volume++;
+      // updateLCDScreen(1, "hello", NONE, "");
+      // generateTileNow = false;
+      // updateLCDScreen(1, "hello", NONE, "");
+      // generateTile(game);
+      // displayRows(game);
+      // generateTileNow = false;
+    }
+    // _delay_ms(1000);
+    // printf("\n volume: %d \n", volume);
+  }
+  
+  // free(game->rowOne);
+  // free(game->rowTwo);
+  // free(game);
+
+
+  // ROWS* game = malloc( sizeof(ROWS) );
+  // game->rowOne = malloc( MAX_ROW_LENGTH + 1 );
+  // (*game).rowTwo = malloc( MAX_ROW_LENGTH + 1 );
+  
+  // while (continueGame) {
+  //   if (generateTileNow) generateTile(game);
+  // }
+
+  // // endGame(game); -> init usart and print things and turn LCD off but use display!
+  // free(game);
 }
 
 void generateTile(ROWS* game) {
   int* randomTileNumber = calloc(1, sizeof(uint8_t));
   *randomTileNumber = rand() % 3 + 1; // generates a random number between 1 and 3 inclusive
+    char strs[10] = "";
+    
+    // printf("\n tile gen!!: %d\n", *randomTileNumber);
+    sprintf(strs, "%d", *randomTileNumber);
+    updateLCDScreen(1, "Tile generated!: ", NONE, "");
+    updateLCDScreen(2, strs, NONE, "");
     
 
   free(randomTileNumber);
@@ -154,7 +201,7 @@ void initTimer(uint16_t speedMultiple) {
 }
 
 int seconds = 0;
-
+// char speedvalue[10] = "";
 // This ISR runs every 4 ms
 ISR(TIMER2_COMPA_vect) {
     counter++; // to check time
@@ -162,6 +209,7 @@ ISR(TIMER2_COMPA_vect) {
     // Generates a new tile at the speed decided previously
     if (((counter + 1) % speedMultiple) == 0) { 
       generateTileNow = true;
+      // printf("\n generate tiles now is : %d\n", generateTileNow);
       seconds++;
 
 
