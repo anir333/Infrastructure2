@@ -216,11 +216,11 @@ void shiftAndAddTiles(int tile, ROWS* game) {
 
   /* Now I modify the original array of tiles in the game to add the new generated tile at the very beginning (position 0) of the array */
   if ( tile == 1 ) {
-    game->rowOne[0] = '\'\'';
+    game->rowOne[0] = '-';
     game->rowTwo[0] = ' ';
   } else if ( tile == 2 ) {
-    game->rowOne[0] = '_';
-    game->rowTwo[0] = ' ';
+    game->rowOne[0] = ' ';
+    game->rowTwo[0] = '`';
   } else {
     game->rowOne[0] = ' ';
     game->rowTwo[0] = '_';
