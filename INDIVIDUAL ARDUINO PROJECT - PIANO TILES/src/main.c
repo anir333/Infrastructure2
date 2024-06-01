@@ -29,13 +29,19 @@
 #define SPEED3 613.8  // Speed of tiles -> 1 seconds
 #define SPEED4 818.4  // Speed of tiles -> 0.75 seconds
 #define SPEED5 1023   // Speed of tiles -> 0.5 seconds
+
+  // Defines the maximum capacity of characters for one row of the LCD screen
+#define MAX_ROW_LENGTH 16
 /* END of Definitions */
 
 
 /* Global Variables */
 uint8_t gameStarted = false;
 uint8_t speedChosen = false;
-uint16_t speedMultiple = 250; // default 1 second speed
+uint16_t speedMultiple = 250; // default 1 second speed but can change up to 500
+uint8_t continueGame = true;
+uint8_t generateTileNow = false;
+volatile unsigned long counter = 0;
 /* END of global variables */
 
 
@@ -92,23 +98,44 @@ void startGame() {
   // endGame();
 }
 
+typedef struct {
+  char* rowOne;
+  char* rowTwo;
+} ROWS;
+
+
 void playGame(int* gameSpeedChosen) {
   speedMultiple = (*gameSpeedChosen == 1) ? 500 : ((*gameSpeedChosen == 2) ? 375 : ((*gameSpeedChosen == 3) ? 250 : ((*gameSpeedChosen == 4) ? 188 : ((*gameSpeedChosen == 5) ? 125 : 250 ))));
   initTimer(speedMultiple);
   startTimer();
-  
-  while (true) {
 
+  srand(ACD); // seed the random generator with the speed level chosen (value read by potentiometer) to genuenly generate random tiles in every game
+
+  ROWS* game = malloc( sizeof(ROWS) );
+  game->rowOne = malloc( MAX_ROW_LENGTH + 1 );
+  (*game).rowTwo = malloc( MAX_ROW_LENGTH + 1 );
+  
+  while (continueGame) {
+    if (generateTileNow) generateTile(game);
   }
 
-
-  // char speed[2] = "";
-  // sprintf(speed, "%d", speedMultiple);
-  // while(1) {
-  //   updateLCDScreen(1, "Speed Multiple:", NONE, "");
-  //   updateLCDScreen(2, speed, NONE, "!!!");
-  // }
+  // endGame(game); -> init usart and print things and turn LCD off but use display!
+  free(game);
 }
+
+void generateTile(ROWS* game) {
+  int* randomTileNumber = calloc(1, sizeof(uint8_t));
+  *randomTileNumber = rand() % 3 + 1; // generates a random number between 1 and 3 inclusive
+    
+
+  free(randomTileNumber);
+  generateTileNow = false;
+}
+
+
+
+
+
 void startTimer() {    
     TCCR2B |= _BV(CS22) | _BV(CS21);
 }
@@ -128,21 +155,21 @@ void initTimer(uint16_t speedMultiple) {
 
 int seconds = 0;
 
-int counter = 0;
-char speedvalue[10] = "";
 // This ISR runs every 4 ms
 ISR(TIMER2_COMPA_vect) {
-    // Increment the counter with 1
-    counter++;
-    // If the counter + 1 is divisible by MULTIPLE, then count 1 sec
+    counter++; // to check time
+  
+    // Generates a new tile at the speed decided previously
     if (((counter + 1) % speedMultiple) == 0) { 
+      generateTileNow = true;
+      seconds++;
 
-        seconds++;
-        
-        sprintf(speedvalue, "%d", seconds);
 
-        updateLCDScreen(1, "Value of speed:", NONE, "");
-        updateLCDScreen(2, speedvalue, NONE, "");
+
+      // sprintf(speedvalue, "%d", seconds);
+
+      // updateLCDScreen(1, "Value of speed:", NONE, "");
+      // updateLCDScreen(2, speedvalue, NONE, "");
     }
 
 }
