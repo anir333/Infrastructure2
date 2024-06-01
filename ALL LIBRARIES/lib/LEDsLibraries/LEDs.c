@@ -3,16 +3,14 @@
 #include <stdio.h>
 #include <avr/io.h>
 #include <LEDs.h>
-#include <time.h>
 #include <usart.h>
 #include <registersLib.h>
-#include <stdbool.h>
 
 void pauseSeconds(int seconds) {
     _delay_ms(seconds * 1000);
 }
 
-bool isLEDon( int LEDnumber ) {
+int isLEDon( int LEDnumber ) {
     if ( LEDnumber < 0 || LEDnumber > NUMBER_OF_LEDS ) return false;
     uint8_t previousLED_PORT = LED_PORT; 
 

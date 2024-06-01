@@ -22,13 +22,16 @@ int main()
   initUSART();
   float frequencies[] = { C5, D5, E5, F5, G5, A5, B5, C6 }; //do-re-mi...
   // // float frequencies[] = { 16.35, 118.35, 2220.60, 106.35, 2000.60, 221.83, 24.5, 201.83 };
-  enableBuzzer();
-  for ( int note = 0; note < 8; note++ )
-  {
-    playTone( frequencies[note], DURATION );
-    printf( "Period: %d\n", (int) frequencies[ note ] );
-    _delay_ms( DURATION ); 
-  }
+  // enableBuzzer();
+  enableBuzzerOnPORTC();
+  // while (1) {
+    for ( int note = 0; note < 8; note++ )
+    {
+      playToneForBuzzerOnPORTC( frequencies[note], DURATION );
+      printf( "Period: %d\n", (int) frequencies[ note ] );
+      _delay_ms( DURATION ); 
+    }
+  // }
   return 0;
 }
 

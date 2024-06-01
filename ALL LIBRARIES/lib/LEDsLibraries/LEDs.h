@@ -1,4 +1,5 @@
-#include <stdbool.h>
+#define true 1
+#define false 0
 #define LED_DDR DDRB
 #define LED_PORT PORTB
 #define NUMBER_OF_LEDS 4
@@ -8,7 +9,7 @@
 void pauseSeconds(int seconds);
 
 /* Returns true if LED specified is ON or false if it's OFF */
-bool isLEDon( int LEDnumber );
+int isLEDon( int LEDnumber );
 
 /* 
 Enables specified LED (does not overwrite => uses OR |) 

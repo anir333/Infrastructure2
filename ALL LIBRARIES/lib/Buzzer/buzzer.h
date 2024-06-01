@@ -13,3 +13,9 @@ void playTone( float frequency, uint32_t duration );
 
 // disables the buzzer
 void disableBuzzer();
+
+void enableBuzzerOnPORTC();
+
+void disableBuzzerOnPORTC();
+
+void playToneForBuzzerOnPORTC( float frequency, uint32_t duration );

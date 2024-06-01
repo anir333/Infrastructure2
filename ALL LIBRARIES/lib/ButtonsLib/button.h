@@ -14,6 +14,9 @@
 #define CONTROL_REGISTER_BUTTONS PCIE1
 #define MASK_BUTTONS PCMSK1
 #define activateInterruptSystemGlobally sei();
+#define BUTTON_ONE   1
+#define BUTTON_TWO   2
+#define BUTTON_THREE 3
 
 /* Writes specified 8 bit mask to specified register (using its memory address and RAM location) */
 void writeMask( volatile uint8_t* registr, uint8_t bitmask );

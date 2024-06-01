@@ -1,14 +1,49 @@
 #define __DELAY_BACKWARD_COMPATIBLE__
 #include <util/delay.h>
 #include <LEDs.h>
+#include <display.h>
+
 
 int main() {
-  ledChaos();
-  
+  initDisplay();
+  turnDisplayOFF();
+  enableAllLeds();
 
+  while (1)
+  {
+    // writeNumberToSegmentAnir(FIRST_DIGIT, THREE);
+    // writeNumberToSegmentAnir(SECOND_DIGIT, THREE);
+    // writeNumberToSegmentAnir(THIRD_DIGIT, THREE);
+    writeNumber(2002);
+    lightUpAllLeds();
+  }
+   
+  
   return 0;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+//definite: 
+/* #define __DELAY_BACKWARD_COMPATIBLE__
+#include <util/delay.h>
+#include <LEDs.h>
+
+int main() {
+  ledChaos(); 
+  
+  return 0;
+}
+ */
 
 
 
