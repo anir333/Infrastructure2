@@ -122,7 +122,7 @@ void playGame(int* gameSpeedChosen) {
   initTimer(speedMultiple);
   startTimer();
 
-  srand(ACD); // seed the random generator with the speed level chosen (value read by potentiometer) to genuenly generate random tiles in every game
+  srand(ADC); // seed the random generator with the speed level chosen (value read by potentiometer) to genuenly generate random tiles in every game
 
 
   ROWS* game = malloc(sizeof(ROWS));
@@ -138,7 +138,7 @@ void playGame(int* gameSpeedChosen) {
   // initUSART();
   int volume = 0;
   // char strrr[10] = "";
-  initUSART();
+  // initUSART();
   while (continueGame) {
     // printf("\n gen tile now : %d\n", generateTileNow);
     if (generateTileNow) {
@@ -190,6 +190,7 @@ void generateTile(ROWS* game) {
       shiftAndAddTiles(3, game);
     }
     
+  
 
   free(randomTileNumber);
   generateTileNow = false;
@@ -215,14 +216,14 @@ void shiftAndAddTiles(int tile, ROWS* game) {
 
   /* Now I modify the original array of tiles in the game to add the new generated tile at the very beginning (position 0) of the array */
   if ( tile == 1 ) {
-    game->rowOne[0] = '-';
+    game->rowOne[0] = '\'\'';
     game->rowTwo[0] = ' ';
   } else if ( tile == 2 ) {
     game->rowOne[0] = '_';
     game->rowTwo[0] = ' ';
   } else {
     game->rowOne[0] = ' ';
-    game->rowTwo[0] = '-';
+    game->rowTwo[0] = '_';
   }
 
   /* Now shift the values, this means to copy the previous values of the original array back into the original array but one position forward */
@@ -231,15 +232,18 @@ void shiftAndAddTiles(int tile, ROWS* game) {
     game->rowTwo[i] = rowTwoCopy[i-1];
   }
 
-  printf("\n value gans: %d and rowOne: ", tile);
-  for (int i = 0; i<17; i++) {
-    printf("%c|", game->rowOne[i]); // or: *(game->rowOne + i)
-  }
-  printf("\n value gans: %d and rowTwo: ", tile);
-  for (int i = 0; i<17; i++) {
-    printf("%c|", game->rowTwo[i]); // or: *(game->rowOne + i)
-  }
-  printf(" finished printing rows of game!\n");
+  // printf("\n value gans: %d and rowOne: ", tile);
+  // for (int i = 0; i<17; i++) {
+  //   printf("%c|", game->rowOne[i]); // or: *(game->rowOne + i)
+  // }
+  // printf("\n value gans: %d and rowTwo: ", tile);
+  // for (int i = 0; i<17; i++) {
+  //   printf("%c|", game->rowTwo[i]); // or: *(game->rowOne + i)
+  // }
+  // printf(" finished printing rows of game!\n");
+
+  updateLCDScreen(1, game->rowOne, NONE, "");
+  updateLCDScreen(2, game->rowTwo, NONE, "");
 
   free(rowOneCopy);
   free(rowTwoCopy);
