@@ -34,12 +34,17 @@
 
 /* Global Variables */
 uint8_t gameStarted = false;
+uint8_t speedChosen = false;
+uint16_t speedMultiple = 250; // default 1 second speed
 /* END of global variables */
 
 
 /* Button Interrputs */
 ISR( PCINT1_vect ) {
   if ( buttonPushed( BUTTON_ONE ) ) {
+    if (gameStarted && !speedChosen) {
+      speedChosen = true;
+    }
     if (!gameStarted) {
       gameStarted = true;
     }
@@ -78,26 +83,78 @@ void waitForStartOfGame() {
 }
 
 void startGame() {
-  uint8_t* gameSpeed = calloc(1, sizeof(uint8_t));
+  int* gameSpeed = calloc(1, sizeof(uint8_t));
   
   chooseSpeed(gameSpeed);
-  // playGame();
+  playGame(gameSpeed);
   
   free(gameSpeed);
   // endGame();
 }
 
+void playGame(int* gameSpeedChosen) {
+  speedMultiple = (*gameSpeedChosen == 1) ? 500 : ((*gameSpeedChosen == 2) ? 375 : ((*gameSpeedChosen == 3) ? 250 : ((*gameSpeedChosen == 4) ? 188 : ((*gameSpeedChosen == 5) ? 125 : 250 ))));
+  initTimer(speedMultiple);
+  startTimer();
+  
+  while (true) {
 
-void chooseSpeed(uint8_t* gameSpeedPointer) {
-  uint8_t speedChosen = false;
-
-  while (!speedChosen) {
-    writeSpeedToDisplay();
-    showSpeedOnLCD();
   }
 
 
-  free(speedChosen);
+  // char speed[2] = "";
+  // sprintf(speed, "%d", speedMultiple);
+  // while(1) {
+  //   updateLCDScreen(1, "Speed Multiple:", NONE, "");
+  //   updateLCDScreen(2, speed, NONE, "!!!");
+  // }
+}
+void startTimer() {    
+    TCCR2B |= _BV(CS22) | _BV(CS21);
+}
+
+void initTimer(uint16_t speedMultiple) {    
+    // Set Timer/Counter Control Register A (TCCR2A) to CTC mode
+    TCCR2A |= _BV( WGM21 );  // Set WGM21 to 1, enabling CTC mode
+    
+    // Enable the Output Compare Match A interrupt for Timer 2
+    TIMSK2 |= (1 << OCIE2A); // Set OCIE2A to 1
+    
+    OCR2A = speedMultiple-1;
+
+    // Enable global interrupts
+    sei();    
+}
+
+int seconds = 0;
+
+int counter = 0;
+char speedvalue[10] = "";
+// This ISR runs every 4 ms
+ISR(TIMER2_COMPA_vect) {
+    // Increment the counter with 1
+    counter++;
+    // If the counter + 1 is divisible by MULTIPLE, then count 1 sec
+    if (((counter + 1) % speedMultiple) == 0) { 
+
+        seconds++;
+        
+        sprintf(speedvalue, "%d", seconds);
+
+        updateLCDScreen(1, "Value of speed:", NONE, "");
+        updateLCDScreen(2, speedvalue, NONE, "");
+    }
+
+}
+
+
+
+void chooseSpeed(int* gameSpeedPointer) {
+  while (!speedChosen) {
+    writeSpeedToDisplay();
+    showSpeedOnLCD();
+    *gameSpeedPointer = currentSpeedValue();
+  }
 }
 
 
@@ -140,8 +197,7 @@ void showSpeedOnLCD() {
   for (int i = 0; i<numOfSpeedToDisplay; i++) {
     secondRow[i] = '*';
   }
-
-  // sprintf(secondRow, "%d", numOfSpeedToDisplay);
+  
   updateLCDScreen(1, firstRow, NONE, "");
   updateLCDScreen(2, secondRow, NONE, "");
 }
