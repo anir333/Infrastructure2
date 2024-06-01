@@ -35,6 +35,19 @@
 /* END of Definitions */
 
 
+
+
+
+
+
+/* 
+
+REMEMBER TO CHECK FOR ALL MEMROY ALLOCATIONS IF !MEM OR  MEM == NULL
+
+AND ALSO REMEMBER TO FREE ALL ALLOCATIONS
+
+ */
+
 /* Global Variables */
 uint8_t gameStarted = false;
 uint8_t speedChosen = false;
@@ -115,7 +128,8 @@ void playGame(int* gameSpeedChosen) {
   ROWS* game = malloc(sizeof(ROWS));
   game->rowOne = malloc(MAX_ROW_LENGTH + 1);
   game->rowTwo = malloc(MAX_ROW_LENGTH + 1);
-  // ChatGPT helped me learn how to initialise all the values of an array of a pointer where memory has been dynamically allocated, with the memset function I initialise all values of game rows to ' ' in order to now have garbage data in those values, and then i make sure the array is finished with a \0 byte since with dynamic allocation this is not done automatically
+
+  // ChatGPT helped me learn how to initialise all the values of an array of a pointer where memory has been dynamically allocated, with the memset function I initialise all values of game rows to ' ' in order to NOT have garbage data in those values, and then I make sure the array is finished with a \0 byte since with dynamic allocation this is not done automatically
   memset(game->rowOne, ' ', MAX_ROW_LENGTH);
   memset(game->rowTwo, ' ', MAX_ROW_LENGTH);
   game->rowOne[MAX_ROW_LENGTH] = '\0';
@@ -123,8 +137,8 @@ void playGame(int* gameSpeedChosen) {
 
   // initUSART();
   int volume = 0;
-  char strrr[10] = "";
-  // initUSART();
+  // char strrr[10] = "";
+  initUSART();
   while (continueGame) {
     // printf("\n gen tile now : %d\n", generateTileNow);
     if (generateTileNow) {
@@ -167,20 +181,69 @@ void playGame(int* gameSpeedChosen) {
 void generateTile(ROWS* game) {
   int* randomTileNumber = calloc(1, sizeof(uint8_t));
   *randomTileNumber = rand() % 3 + 1; // generates a random number between 1 and 3 inclusive
-    char strs[10] = "";
-    
-    // printf("\n tile gen!!: %d\n", *randomTileNumber);
-    sprintf(strs, "%d", *randomTileNumber);
-    updateLCDScreen(1, "Tile generated!: ", NONE, "");
-    updateLCDScreen(2, strs, NONE, "");
+
+    if (*randomTileNumber == 1) {
+      shiftAndAddTiles(1, game);
+    } else if (*randomTileNumber == 2) {
+      shiftAndAddTiles(2, game);
+    } else {
+      shiftAndAddTiles(3, game);
+    }
     
 
   free(randomTileNumber);
   generateTileNow = false;
+} //==>
+    // char strs[10] = "";
+    // printf("\n tile gen!!: %d\n", *randomTileNumber);
+    // sprintf(strs, "%d", *randomTileNumber);
+    // updateLCDScreen(1, "Tile generated!: ", NONE, "");
+    // updateLCDScreen(2, strs, NONE, "");
+
+void shiftAndAddTiles(int tile, ROWS* game) {
+  /* First I create a copy of the current state of the tiles in the game */
+  char* rowOneCopy = malloc(MAX_ROW_LENGTH + 1);
+  char* rowTwoCopy = malloc(MAX_ROW_LENGTH + 1);
+  rowOneCopy[MAX_ROW_LENGTH] = '\0';
+  rowTwoCopy[MAX_ROW_LENGTH] = '\0';
+
+  /* I copy the current tiles to the copy arrays so I can modify the original array of tiles without loosing the current state */
+  for (int i = 0; i<16; i++) {
+    rowOneCopy[i] = *(game->rowOne + i);
+    rowTwoCopy[i] = *(game->rowTwo + i);
+  }
+
+  /* Now I modify the original array of tiles in the game to add the new generated tile at the very beginning (position 0) of the array */
+  if ( tile == 1 ) {
+    game->rowOne[0] = '-';
+    game->rowTwo[0] = ' ';
+  } else if ( tile == 2 ) {
+    game->rowOne[0] = '_';
+    game->rowTwo[0] = ' ';
+  } else {
+    game->rowOne[0] = ' ';
+    game->rowTwo[0] = '-';
+  }
+
+  /* Now shift the values, this means to copy the previous values of the original array back into the original array but one position forward */
+  for (int i = 1; i<16; i++) {
+    game->rowOne[i] = rowOneCopy[i-1];
+    game->rowTwo[i] = rowTwoCopy[i-1];
+  }
+
+  printf("\n value gans: %d and rowOne: ", tile);
+  for (int i = 0; i<17; i++) {
+    printf("%c|", game->rowOne[i]); // or: *(game->rowOne + i)
+  }
+  printf("\n value gans: %d and rowTwo: ", tile);
+  for (int i = 0; i<17; i++) {
+    printf("%c|", game->rowTwo[i]); // or: *(game->rowOne + i)
+  }
+  printf(" finished printing rows of game!\n");
+
+  free(rowOneCopy);
+  free(rowTwoCopy);
 }
-
-
-
 
 
 void startTimer() {    
