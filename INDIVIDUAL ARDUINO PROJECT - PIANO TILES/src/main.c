@@ -51,9 +51,11 @@ AND ALSO REMEMBER TO FREE ALL ALLOCATIONS
 /* Global Variables */
 uint8_t gameStarted = false;
 uint8_t speedChosen = false;
-uint16_t speedMultiple = 250; // default 1 second speed but can change up to 500
+uint16_t speedMultiple = 250; // default 1 second speed but can change up to 500 or as low as 125
 uint8_t continueGame = true;
-volatile uint8_t generateTileNow = true;//false;
+volatile uint8_t buttonClicked = false;
+volatile uint8_t lastButtonClicked = 0;
+volatile uint8_t generateTileNow = false;
 volatile unsigned long counter = 0;
 /* END of global variables */
 
@@ -61,11 +63,30 @@ volatile unsigned long counter = 0;
 /* Button Interrputs */
 ISR( PCINT1_vect ) {
   if ( buttonPushed( BUTTON_ONE ) ) {
-    if (gameStarted && !speedChosen) {
+    _delay_ms( 100 ); // to debounce
+    if ( gameStarted && speedChosen ) {
+      buttonClicked = true;
+      lastButtonClicked = BUTTON_ONE;
+    }
+    if ( gameStarted && !speedChosen ) {
       speedChosen = true;
     }
-    if (!gameStarted) {
+    if ( !gameStarted ) {
       gameStarted = true;
+    }
+  }
+  if ( buttonPushed( BUTTON_TWO ) ) {
+    _delay_ms( 100 );
+    if ( gameStarted && speedChosen ) {
+      buttonClicked = true;
+      lastButtonClicked = BUTTON_TWO;
+    }
+  }
+  if ( buttonPushed( BUTTON_THREE ) ) {
+    _delay_ms( 100 );
+    if ( gameStarted && speedChosen ) {
+      buttonClicked = true;
+      lastButtonClicked = BUTTON_THREE;
     }
   }
 }
@@ -129,36 +150,26 @@ void playGame(int* gameSpeedChosen) {
   game->rowOne = malloc(MAX_ROW_LENGTH + 1);
   game->rowTwo = malloc(MAX_ROW_LENGTH + 1);
 
-  // ChatGPT helped me learn how to initialise all the values of an array of a pointer where memory has been dynamically allocated, with the memset function I initialise all values of game rows to ' ' in order to NOT have garbage data in those values, and then I make sure the array is finished with a \0 byte since with dynamic allocation this is not done automatically
+  // With some online research I learned how to initialise all the values of an array of a pointer where memory has been dynamically allocated, with the memset() function I initialise all values of game rows to ' ' in order to NOT have garbage data in those values, and then I make sure the array is finished with a \0 byte since with dynamic allocation this is not done automatically
   memset(game->rowOne, ' ', MAX_ROW_LENGTH);
   memset(game->rowTwo, ' ', MAX_ROW_LENGTH);
   game->rowOne[MAX_ROW_LENGTH] = '\0';
   game->rowTwo[MAX_ROW_LENGTH] = '\0';
 
-  // initUSART();
   int volume = 0;
-  // char strrr[10] = "";
   // initUSART();
-  while (continueGame) {
-    // printf("\n gen tile now : %d\n", generateTileNow);
-    if (generateTileNow) {
+  while ( continueGame ) {
+
+    if ( generateTileNow ) {
       volume++;
-      // sprintf(strrr, "%d", volume);
-      // updateLCDScreen(1, strrr, NONE, "");
-      // printf("\n volume is: %d\n", volume);
-      generateTile(game);
-      // generateTileNow = false;
-      // generateTileNow = false;
-      // volume++;
-      // updateLCDScreen(1, "hello", NONE, "");
-      // generateTileNow = false;
-      // updateLCDScreen(1, "hello", NONE, "");
-      // generateTile(game);
-      // displayRows(game);
-      // generateTileNow = false;
+      generateTile( game );
     }
-    // _delay_ms(1000);
-    // printf("\n volume: %d \n", volume);
+
+    checkNextTile( game );
+
+    if ( buttonClicked ) {
+
+    }
   }
   
   // free(game->rowOne);
@@ -178,38 +189,39 @@ void playGame(int* gameSpeedChosen) {
   // free(game);
 }
 
-void generateTile(ROWS* game) {
-  int* randomTileNumber = calloc(1, sizeof(uint8_t));
+void checkNextTile( ROWS* game ) {
+
+}
+
+void generateTile( ROWS* game ) {
+  int* randomTileNumber = calloc( 1, sizeof(uint8_t) );
   *randomTileNumber = rand() % 3 + 1; // generates a random number between 1 and 3 inclusive
 
-    if (*randomTileNumber == 1) {
-      shiftAndAddTiles(1, game);
-    } else if (*randomTileNumber == 2) {
-      shiftAndAddTiles(2, game);
+    if ( *randomTileNumber == 1 ) {
+      shiftAndAddTiles( 1, game );
+    } else if ( *randomTileNumber == 2 ) {
+      shiftAndAddTiles( 2, game );
     } else {
-      shiftAndAddTiles(3, game);
+      shiftAndAddTiles( 3, game );
     }
+
+  updateLCDScreen( 1, game->rowOne, NONE, "" );
+  updateLCDScreen( 2, game->rowTwo, NONE, "" );
     
-  
 
-  free(randomTileNumber);
+  free( randomTileNumber );
   generateTileNow = false;
-} //==>
-    // char strs[10] = "";
-    // printf("\n tile gen!!: %d\n", *randomTileNumber);
-    // sprintf(strs, "%d", *randomTileNumber);
-    // updateLCDScreen(1, "Tile generated!: ", NONE, "");
-    // updateLCDScreen(2, strs, NONE, "");
+}
 
-void shiftAndAddTiles(int tile, ROWS* game) {
+void shiftAndAddTiles( int tile, ROWS* game ) {
   /* First I create a copy of the current state of the tiles in the game */
-  char* rowOneCopy = malloc(MAX_ROW_LENGTH + 1);
-  char* rowTwoCopy = malloc(MAX_ROW_LENGTH + 1);
+  char* rowOneCopy = malloc( MAX_ROW_LENGTH + 1 );
+  char* rowTwoCopy = malloc( MAX_ROW_LENGTH + 1 );
   rowOneCopy[MAX_ROW_LENGTH] = '\0';
   rowTwoCopy[MAX_ROW_LENGTH] = '\0';
 
   /* I copy the current tiles to the copy arrays so I can modify the original array of tiles without loosing the current state */
-  for (int i = 0; i<16; i++) {
+  for ( int i = 0 ; i<16 ; i++ ) {
     rowOneCopy[i] = *(game->rowOne + i);
     rowTwoCopy[i] = *(game->rowTwo + i);
   }
@@ -227,11 +239,15 @@ void shiftAndAddTiles(int tile, ROWS* game) {
   }
 
   /* Now shift the values, this means to copy the previous values of the original array back into the original array but one position forward */
-  for (int i = 1; i<16; i++) {
+  for ( int i = 1 ; i<16 ; i++ ) {
     game->rowOne[i] = rowOneCopy[i-1];
     game->rowTwo[i] = rowTwoCopy[i-1];
   }
 
+  /* Freeing the space of the copies I made */
+  free( rowOneCopy );
+  free( rowTwoCopy );
+} // ==>
   // printf("\n value gans: %d and rowOne: ", tile);
   // for (int i = 0; i<17; i++) {
   //   printf("%c|", game->rowOne[i]); // or: *(game->rowOne + i)
@@ -242,26 +258,19 @@ void shiftAndAddTiles(int tile, ROWS* game) {
   // }
   // printf(" finished printing rows of game!\n");
 
-  updateLCDScreen(1, game->rowOne, NONE, "");
-  updateLCDScreen(2, game->rowTwo, NONE, "");
-
-  free(rowOneCopy);
-  free(rowTwoCopy);
-}
-
 
 void startTimer() {    
-    TCCR2B |= _BV(CS22) | _BV(CS21);
+    TCCR2B |= _BV( CS22 ) | _BV( CS21 );
 }
 
-void initTimer(uint16_t speedMultiple) {    
+void initTimer( uint16_t speedMultiple ) {    
     // Set Timer/Counter Control Register A (TCCR2A) to CTC mode
     TCCR2A |= _BV( WGM21 );  // Set WGM21 to 1, enabling CTC mode
     
     // Enable the Output Compare Match A interrupt for Timer 2
-    TIMSK2 |= (1 << OCIE2A); // Set OCIE2A to 1
+    TIMSK2 |= _BV( OCIE2A ); // Set OCIE2A to 1
     
-    OCR2A = speedMultiple-1;
+    OCR2A = speedMultiple - 1;
 
     // Enable global interrupts
     sei();    
@@ -270,11 +279,11 @@ void initTimer(uint16_t speedMultiple) {
 int seconds = 0;
 // char speedvalue[10] = "";
 // This ISR runs every 4 ms
-ISR(TIMER2_COMPA_vect) {
+ISR( TIMER2_COMPA_vect ) {
     counter++; // to check time
   
     // Generates a new tile at the speed decided previously
-    if (((counter + 1) % speedMultiple) == 0) { 
+    if ( ( (counter + 1) % speedMultiple) == 0 ) { 
       generateTileNow = true;
       // printf("\n generate tiles now is : %d\n", generateTileNow);
       seconds++;
@@ -291,8 +300,8 @@ ISR(TIMER2_COMPA_vect) {
 
 
 
-void chooseSpeed(int* gameSpeedPointer) {
-  while (!speedChosen) {
+void chooseSpeed( int* gameSpeedPointer ) {
+  while ( !speedChosen ) {
     writeSpeedToDisplay();
     showSpeedOnLCD();
     *gameSpeedPointer = currentSpeedValue();
@@ -331,17 +340,17 @@ void writeSpeedToDisplay() {
 
 void showSpeedOnLCD() {
   char firstRow[16] = "";
-  sprintf(firstRow, "Choose Speed: %d", currentSpeedValue()); 
+  sprintf( firstRow, "Choose Speed: %d", currentSpeedValue() ); 
 
   int numOfSpeedToDisplay = ADC / 64; // value between 0 and 16
   char secondRow[17] = "";
 
-  for (int i = 0; i<numOfSpeedToDisplay; i++) {
+  for ( int i = 0 ; i<numOfSpeedToDisplay ; i++ ) {
     secondRow[i] = '*';
   }
   
-  updateLCDScreen(1, firstRow, NONE, "");
-  updateLCDScreen(2, secondRow, NONE, "");
+  updateLCDScreen( 1, firstRow,  NONE, "" );
+  updateLCDScreen( 2, secondRow, NONE, "" );
 }
 
 
