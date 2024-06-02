@@ -23,8 +23,8 @@
   // Comment the next line if you want to test the game so that the game doesn't end
 #define ALLOW_END_GAME true
 
-// Comment this line to play the game without the buzzer making sound
-#define MAKE_SOUND true 
+  // Comment the next line to play the game without the buzzer making sound
+#define MAKE_SOUND true
 
   // For digits that need to be turned OFF on the 7 segment display
 #define EMPTY_DIGIT 0xFF
@@ -94,8 +94,8 @@ uint8_t speedChosen = false;
 uint16_t speedMultiple = 250; // default 1 second speed but can change up to 500 or as low as 125
 uint16_t secondsMultiple = 250;
 uint8_t continueGame = true;
-volatile uint16_t seconds = 5;
-volatile uint16_t score = 10;
+volatile uint16_t seconds = 60;
+volatile uint16_t score = 90;
 volatile uint8_t note = 0;
 volatile uint8_t buttonClicked = false;
 volatile uint8_t lastButtonClicked = 0;
@@ -308,10 +308,16 @@ void playGame(int* gameSpeedChosen) {
       if ( lastButtonClicked == followingButtonToClick ) {
         lightUpAllLeds();
         removeTile( game );
-        playSound( game );
+
+        #ifdef MAKE_SOUND
+          playSound( game );
+        #endif
       } else {
         score -= 10;
-        playErrorSound();
+
+        #ifdef MAKE_SOUND
+          playErrorSound();
+        #endif
       }
 
       buttonClicked = false;
