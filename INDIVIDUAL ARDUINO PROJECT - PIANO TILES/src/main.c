@@ -38,18 +38,61 @@
 
   // Defines the maximum capacity of characters for one row of the LCD screen
 #define MAX_ROW_LENGTH 16
+
+
+// FREQUENCIES OF THE NOTES
+#define C4 261.63
+#define D4 293.66
+#define E4 329.63
+#define F4 349.23
+#define G4 392.00
+#define A4 440.00
+#define B4 493.88
+#define C5 523.250
+#define D5 587.330
+#define E5 659.250
+#define F5 698.460
+#define G5 783.990
+#define A5 880.00
+#define B5 987.770
+#define C6 1046.500
+// #define C4 2
+// #define D4 2
+// #define E4 3
+// #define F4 3
+// #define G4 3
+// #define A4 4
+// #define B4 4
+// #define C5 5
+// #define D5 5
+// #define E5 6
+// #define F5 6
+// #define G5 7
+// #define A5 8
+// #define B5 9
+// #define C6 1
+
 /* END of Definitions */
 
 
-// type deifnition that contains tiles rows for the LCD display
+
+typedef struct {
+  int* song;
+} MELODY;
+
+// type definition that contains tiles rows for the LCD display, and the melody to play
 typedef struct {
   char* rowOne;
   char* rowTwo;
+  MELODY melody;
 } ROWS;
 
-
-
-
+// I used the help of ChatGPT to generate these melodies
+const int song1[50] = {C5, D5, E5, F5, G5, A5, B5, C6, C5, D5, E5, F5, G5, A5, B5, C6, C5, D5, E5, F5, G5, A5, B5, C6, C5, D5, E5, F5, G5, A5, B5, C6, C5, D5, E5, F5, G5, A5, B5, C6, C5, D5, E5, F5, G5, A5, B5, C6, C5, D5};
+const int song2[50] = {C5, E5, G5, C6, B5, A5, G5, F5, E5, D5, C5, G5, E5, C5, G5, A5, B5, C6, D5, E5, F5, E5, D5, C5, B4, A4, G4, F4, E4, D4, C4, E4, G4, A4, G4, F4, E4, D4, C4, B4, C5, E5, G5, C6, B5, A5, G5, F5, E5, D5};
+const int song3[50] = {C5, E5, G5, C6, B5, A5, G5, F5, E5, D5, C5, G5, E5, C5, G5, A5, B5, C6, D5, E5, F5, E5, D5, C5, B4, A4, G4, F4, E4, D4, C4, E4, G4, A4, G4, F4, E4, D4, C4, B4, C5, E5, G5, C6, B5, A5, G5, F5, E5, D5};
+const int song4[50] = {E5, D5, C5, D5, E5, E5, E5, D5, D5, D5, E5, G5, G5, E5, D5, C5, D5, E5, E5, E5, D5, D5, E5, D5, C5, D5, D5, D5, D5, E5, D5, C5, B4, C5, D5, E5, D5, C5, D5, E5, E5, E5, D5, D5, D5, E5, G5, G5, E5, D5};
+const int song5[50] = {G4, A4, B4, C5, D5, E5, F5, G5, F5, E5, D5, C5, B4, A4, G4, F4, E4, D4, C4, B4, A4, G4, F4, E4, D4, C4, B4, A4, G4, F4, E4, D4, C4, B4, A4, G4, F4, E4, D4, C4, B4, A4, G4, F4, E4, D4, C4, B4, C5, D5};
 
 /* 
 
@@ -67,6 +110,7 @@ uint16_t secondsMultiple = 250;
 uint8_t continueGame = true;
 volatile uint16_t seconds = 60;
 volatile uint16_t score = 90;
+volatile uint8_t note = 0;
 volatile uint8_t buttonClicked = false;
 volatile uint8_t lastButtonClicked = 0;
 volatile uint8_t followingButtonToClick = 0;
@@ -112,6 +156,8 @@ ISR( TIMER2_COMPA_vect ) {
     counter++; // to check time
   
     if ( ( (counter + 1) % secondsMultiple ) == 0 ) seconds--;
+    if ( seconds < 1 ) seconds = 99; 
+    if ( score < 1 ) score = 90;
 
     // Generates a new tile at the speed decided previously
     if ( ( (counter + 1) % speedMultiple ) == 0 ) { 
@@ -172,18 +218,33 @@ void playGame(int* gameSpeedChosen) {
   initTimer(speedMultiple);
   startTimer();
 
-  // timer used for the buzzer
-  // initTimer1(250);
-  // startTimer1();
-
-
   srand(ADC); // seed the random generator with the speed level chosen (value read by potentiometer) to genuenly generate random tiles in every game
 
+  uint8_t* songChosen = calloc(1, sizeof(uint8_t));
+  MELODY* gameSong = malloc( sizeof( MELODY ) );
+  // CHEKC FOR MEMORY ALLOCATION DONE CORRECLTY OR NOT
+  *songChosen = rand() % 5 + 1; // chooses a song from 1 to 5
+
+  if (*songChosen == 1) {
+    gameSong->song = song1;
+  } else if (*songChosen == 2) {
+    gameSong->song = song2;
+  } else if (*songChosen == 3) {
+    gameSong->song = song3;
+  } else if (*songChosen == 4) {
+    gameSong->song = song4;
+  } else {
+    gameSong->song = song5;
+  }
+
+
   secondsMultiple = speedMultiple == 250 ? speedMultiple : (speedMultiple == 125 ? 500 : (speedMultiple == 188 ? 350 : (speedMultiple == 400 ? 415 : 250))); 
+
 
   ROWS* game = malloc(sizeof(ROWS));
   game->rowOne = malloc(MAX_ROW_LENGTH + 1);
   game->rowTwo = malloc(MAX_ROW_LENGTH + 1);
+  game->melody = *gameSong;
 
   // With some online research I learned how to initialise all the values of an array of a pointer where memory has been dynamically allocated, with the memset() function I initialise all values of game rows to ' ' in order to NOT have garbage data in those values, and then I make sure the array is finished with a \0 byte since with dynamic allocation this is not done automatically
   memset(game->rowOne, ' ', MAX_ROW_LENGTH);
@@ -191,11 +252,24 @@ void playGame(int* gameSpeedChosen) {
   game->rowOne[MAX_ROW_LENGTH] = '\0';
   game->rowTwo[MAX_ROW_LENGTH] = '\0';
 
-  // int volume = 0;
+  free(songChosen);
+  free(gameSong);
+  
+  
+  // initUSART();
+  // printf("\n\n\n PRINTING SONG CHOSEN NOTES:\n");
+  // for (int i = 0; i<50; i++) {
+  //   printf("%d, ", game->melody.song[i]);
+  // }
+
+  // printf("\n\n\n PRINTING SONG 1:\n");
+  // for (int i = 0; i<50; i++) {
+  //   printf("%d, ", song1[i]);
+  // }
+
   while ( continueGame ) {
 
     if ( generateTileNow ) {
-      // volume++;
       generateTile( game );
     }
 
@@ -205,7 +279,7 @@ void playGame(int* gameSpeedChosen) {
       if ( lastButtonClicked == followingButtonToClick ) {
         lightUpAllLeds();
         removeTile( game );
-        playSound();
+        playSound( game );
       } else {
         score -= 10;
         playErrorSound();
@@ -223,9 +297,15 @@ void playGame(int* gameSpeedChosen) {
   free(game);
 } // play game function
 
-void playSound() {
+void playSound( ROWS* game ) {
+  note++;
+  if (note > 49) note = 0;
+  // printf("\n\n\n PRINTING SONG CHOSEN NOTES:\n");
+  // for (int i = 0; i<50; i++) {
+  //   printf("%d, ", game->melody.song[i]);
+  // }
   enableBuzzerOnPORTC();
-  playToneForBuzzerOnPORTC( 2080, 150 );
+  playToneForBuzzerOnPORTC( game->melody.song[note], 150 );
 }
 
 void playErrorSound() {
@@ -311,16 +391,21 @@ void shiftAndAddTiles( int tile, ROWS* game ) {
   }
 
   /* Now I modify the original array of tiles in the game to add the new generated tile at the very beginning (position 0) of the array */
-  if ( tile == 1 ) {
-    game->rowOne[0] = '-';
-    game->rowTwo[0] = ' ';
-  } else if ( tile == 2 ) {
-    game->rowOne[0] = ' ';
-    game->rowTwo[0] = '`';
-  } else {
-    game->rowOne[0] = ' ';
-    game->rowTwo[0] = '_';
-  }
+  // if (seconds <= 17) {
+  //   game->rowOne[0] = ' ';
+  //   game->rowTwo[0] = ' ';
+  // } else {
+    if ( tile == 1 ) {
+      game->rowOne[0] = '-';
+      game->rowTwo[0] = ' ';
+    } else if ( tile == 2 ) {
+      game->rowOne[0] = ' ';
+      game->rowTwo[0] = '`';
+    } else {
+      game->rowOne[0] = ' ';
+      game->rowTwo[0] = '_';
+    }
+  // }
 
   /* Now shift the values, this means to copy the previous values of the original array back into the original array but one position forward */
   for ( int i = 1 ; i<16 ; i++ ) {
@@ -331,16 +416,7 @@ void shiftAndAddTiles( int tile, ROWS* game ) {
   /* Freeing the space of the copies I made */
   free( rowOneCopy );
   free( rowTwoCopy );
-} // ==>
-  // printf("\n value gans: %d and rowOne: ", tile);
-  // for (int i = 0; i<17; i++) {
-  //   printf("%c|", game->rowOne[i]); // or: *(game->rowOne + i)
-  // }
-  // printf("\n value gans: %d and rowTwo: ", tile);
-  // for (int i = 0; i<17; i++) {
-  //   printf("%c|", game->rowTwo[i]); // or: *(game->rowOne + i)
-  // }
-  // printf(" finished printing rows of game!\n");
+}
 
 
 void startTimer() {    
