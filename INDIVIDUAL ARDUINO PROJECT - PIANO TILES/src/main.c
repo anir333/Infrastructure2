@@ -179,6 +179,7 @@ void playGame(int* gameSpeedChosen) {
     if ( buttonClicked ) {
       if (lastButtonClicked == followingButtonToClick) {
         lightUpAllLeds();
+        removeTile( game );
       }
 
       buttonClicked = false;
@@ -189,6 +190,40 @@ void playGame(int* gameSpeedChosen) {
   free(game->rowOne);
   free(game->rowTwo);
   free(game);
+}
+
+int seconds = 0;
+// char speedvalue[10] = "";
+// This ISR runs every 4 ms
+ISR( TIMER2_COMPA_vect ) {
+    counter++; // to check time
+  
+    // Generates a new tile at the speed decided previously
+    if ( ( (counter + 1) % speedMultiple) == 0 ) { 
+      generateTileNow = true;
+      // printf("\n generate tiles now is : %d\n", generateTileNow);
+      seconds++;
+      lightDownAllLeds();
+
+
+
+      // sprintf(speedvalue, "%d", seconds);
+
+      // updateLCDScreen(1, "Value of speed:", NONE, "");
+      // updateLCDScreen(2, speedvalue, NONE, "");
+    }
+
+}
+
+void removeTile( ROWS* game ) {
+  for ( int i = 16 ; i>=0 ; i-- ) {
+    if ( (game->rowOne[i] == '-') || (game->rowTwo[i] == '`') || (game->rowTwo[i] == '_') ) {
+      game->rowOne[i] = ' ';
+      game->rowTwo[i] = ' ';
+      return;
+      break;
+    }
+  }
 }
 
 void checkNextTile( ROWS* game ) {
@@ -287,27 +322,6 @@ void initTimer( uint16_t speedMultiple ) {
     sei();    
 }
 
-int seconds = 0;
-// char speedvalue[10] = "";
-// This ISR runs every 4 ms
-ISR( TIMER2_COMPA_vect ) {
-    counter++; // to check time
-  
-    // Generates a new tile at the speed decided previously
-    if ( ( (counter + 1) % speedMultiple) == 0 ) { 
-      generateTileNow = true;
-      // printf("\n generate tiles now is : %d\n", generateTileNow);
-      seconds++;
-
-
-
-      // sprintf(speedvalue, "%d", seconds);
-
-      // updateLCDScreen(1, "Value of speed:", NONE, "");
-      // updateLCDScreen(2, speedvalue, NONE, "");
-    }
-
-}
 
 
 
@@ -357,7 +371,7 @@ void showSpeedOnLCD() {
   char secondRow[17] = "";
 
   for ( int i = 0 ; i<numOfSpeedToDisplay ; i++ ) {
-    secondRow[i] = '*';
+    secondRow[i] = '-';
   }
   
   updateLCDScreen( 1, firstRow,  NONE, "" );
