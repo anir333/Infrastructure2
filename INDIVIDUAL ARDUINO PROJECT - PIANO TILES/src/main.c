@@ -23,6 +23,9 @@
 // Comment this line if you want to test the game so that the game doesn't end
 #define ALLOW_END_GAME true
 
+// Comment this line to play the game without the buzzer making sound
+#define MAKE_SOUND true 
+
   // For digits that need to be turned OFF on the 7 segment display
 #define EMPTY_DIGIT 0xFF
 
@@ -128,7 +131,7 @@ int main() {
     enableAllLeds(); // enable all LEDs for ouput
     enableAllButtons(); // enable all buttons for input
     enableAllButtonInterrupts(); // enable the interrupts for all the buttons
-
+    // enableBuzzerOnPORTC();
 
     waitForStartOfGame();
     
@@ -169,6 +172,11 @@ void playGame(int* gameSpeedChosen) {
   initTimer(speedMultiple);
   startTimer();
 
+  // timer used for the buzzer
+  // initTimer1(250);
+  // startTimer1();
+
+
   srand(ADC); // seed the random generator with the speed level chosen (value read by potentiometer) to genuenly generate random tiles in every game
 
   secondsMultiple = speedMultiple == 250 ? speedMultiple : (speedMultiple == 125 ? 500 : (speedMultiple == 188 ? 350 : (speedMultiple == 400 ? 415 : 250))); 
@@ -194,9 +202,12 @@ void playGame(int* gameSpeedChosen) {
     checkNextTile( game );
 
     if ( buttonClicked ) {
-      if (lastButtonClicked == followingButtonToClick) {
+      if ( lastButtonClicked == followingButtonToClick ) {
         lightUpAllLeds();
         removeTile( game );
+        enableBuzzerOnPORTC();
+         playToneForBuzzerOnPORTC( 523, 150 );
+          _delay_ms( 150 ); 
       } else {
         score -= 10;
       }
@@ -215,8 +226,6 @@ void playGame(int* gameSpeedChosen) {
 
 
 void displaySecondsLeft() {
-  // writeNumberToSegmentAnir(FIRST_DIGIT, EMPTY_DIGIT);
-  // writeNumberToSegmentAnir(SECOND_DIGIT, EMPTY_DIGIT);
   if (seconds >= 1) { 
     writeIntToSegmentAnir( FIRST_DIGIT , seconds / 10 );
     writeIntToSegmentWithDotAnir( SECOND_DIGIT , seconds % 10 );
@@ -273,7 +282,6 @@ void generateTile( ROWS* game ) {
 }
 
 void shiftAndAddTiles( int tile, ROWS* game ) {
-  // initUSART()
   if ( ((game->rowOne[15] == '-') && (game->rowTwo[15] == ' ')) || 
        ((game->rowOne[15] == ' ') && (game->rowTwo[15] == '`')) ||
        ((game->rowOne[15] == ' ') && (game->rowTwo[15] == '_')) ) {
@@ -309,7 +317,6 @@ void shiftAndAddTiles( int tile, ROWS* game ) {
     game->rowOne[i] = rowOneCopy[i-1];
     game->rowTwo[i] = rowTwoCopy[i-1];
   }
-  // printf("\nemosido enganyado\n");
 
   /* Freeing the space of the copies I made */
   free( rowOneCopy );
@@ -328,6 +335,10 @@ void shiftAndAddTiles( int tile, ROWS* game ) {
 
 void startTimer() {    
     TCCR2B |= _BV( CS22 ) | _BV( CS21 );
+}
+
+void stopTimer() {
+    TCCR2B &= ~(_BV(CS22) | _BV(CS21) | _BV(CS20));
 }
 
 void initTimer( uint16_t speedMultiple ) {    
@@ -407,6 +418,59 @@ void showSpeedOnLCD() {
 
 
 
+
+
+
+// void startTimer1() {
+//     TCCR1B |= _BV(CS12) | _BV(CS10);  // Set prescaler to 1024
+// }
+
+// void stopTimer1() {
+//     TCCR1B &= ~(_BV(CS12) | _BV(CS11) | _BV(CS10));  // Stop the timer
+// }
+
+// void initTimer1(uint16_t compareMatch) {
+//     // Set Timer/Counter Control Register A (TCCR1A) to normal mode
+//     TCCR1A = 0;
+
+//     // Set WGM bits in TCCR1B for CTC mode (WGM12 = 1)
+//     TCCR1B |= _BV(WGM12);
+
+//     // Enable the Output Compare A Match interrupt for Timer 1
+//     TIMSK1 |= _BV(OCIE1A);
+
+//     // Set the compare match value
+//     OCR1A = compareMatch - 1;
+
+//     // Enable global interrupts
+//     sei();
+// }
+
+// #define C5 523.250
+// #define D5 587.330
+// #define E5 659.250
+// #define F5 698.460
+// #define G5 783.990
+// #define A5 880.00
+// #define B5 987.770
+// #define C6 1046.500
+
+// ISR(TIMER1_COMPA_vect) {
+//     if ( buttonClicked ) {
+//       if (lastButtonClicked == followingButtonToClick) {
+
+//          enableBuzzerOnPORTC();
+//          playToneForBuzzerOnPORTC( C5, 150 );
+//           _delay_ms( 150 ); 
+
+//         buttonClicked = false;
+//       } 
+//       // else {
+//         // playErrorSound();
+//       // }
+//     }
+
+// }
 
 
 
