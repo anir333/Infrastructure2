@@ -94,8 +94,8 @@ uint8_t speedChosen = false;
 uint16_t speedMultiple = 250; // default 1 second speed but can change up to 500 or as low as 125
 uint16_t secondsMultiple = 250;
 uint8_t continueGame = true;
-volatile uint16_t seconds = 60;
-volatile uint16_t score = 90;
+volatile uint16_t seconds = 5;
+volatile uint16_t score = 10;
 volatile uint8_t note = 0;
 volatile uint8_t buttonClicked = false;
 volatile uint8_t lastButtonClicked = 0;
@@ -202,14 +202,51 @@ void startGame() {
   
   free(gameSpeed);
 
-  endGame();
+  endGame(&score);
 }
 
 
-void endGame() {
+void endGame(int* score) {
+  if ( *score <= 0 ) {
+    updateLCDScreen(1, "YOU LOST!", NONE, ":(");
+    updateLCDScreen(2, "Don't give up!", NONE, "");
+  } else {
+    char scoreS[10] = "";
+    sprintf(scoreS, "Score: %d ", *score);
+    updateLCDScreen(1, "YOU WON!", NONE, ";)");
+    updateLCDScreen(2, scoreS, NONE, "");
+  }
+
+
+
+
   initUSART();
 
-  printf("\n\n\n\n GAME ENDED \n\n\n\n");
+  printf("\n\n\n\n");
+  printf("\n**********************************************************");
+  printf("\n*************** PIANO TILES GAME ENDED *******************\n");
+  if ( *score <= 0 ) {
+    printf("\n*********************** YOU LOST! ************************\n");
+  } else {
+    printf("\n*********************** YOU WON! *************************\n");
+  }
+
+  printf("\n********************** YOUR SCORE: %d ********************\n\n", *score);
+  printf("**********************************************************\n\n\n\n");
+
+  while (1) {
+    if ( *score <= 0 ) {
+      writeNumberToSegmentAnir( FIRST_DIGIT, 0xFF );
+      writeNumberToSegmentAnir( SECOND_DIGIT, 0xFF );
+      writeNumberToSegmentAnir( THIRD_DIGIT, 0b11110000 );
+      writeNumberToSegmentAnir( FOURTH_DIGIT, 0b10000000 );
+    } else {
+      writeNumberToSegmentAnir( FIRST_DIGIT, 0xFF );
+      writeNumberToSegmentAnir( SECOND_DIGIT, 0xFF );
+      writeNumberToSegmentAnir( THIRD_DIGIT, 0b11000110 );
+      writeNumberToSegmentAnir( FOURTH_DIGIT, 0b10000000 );
+    }
+  }
 }
 
 
