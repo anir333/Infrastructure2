@@ -20,6 +20,9 @@
 #define true  1
 #define false 0
 
+// Comment this line if you want to test the game so that the game doesn't end
+#define ALLOW_END_GAME true
+
   // For digits that need to be turned OFF on the 7 segment display
 #define EMPTY_DIGIT 0xFF
 
@@ -35,6 +38,11 @@
 /* END of Definitions */
 
 
+// type deifnition that contains tiles rows for the LCD display
+typedef struct {
+  char* rowOne;
+  char* rowTwo;
+} ROWS;
 
 
 
@@ -54,6 +62,8 @@ uint8_t speedChosen = false;
 uint16_t speedMultiple = 250; // default 1 second speed but can change up to 500 or as low as 125
 uint16_t secondsMultiple = 250;
 uint8_t continueGame = true;
+volatile uint16_t seconds = 60;
+volatile uint16_t score = 90;
 volatile uint8_t buttonClicked = false;
 volatile uint8_t lastButtonClicked = 0;
 volatile uint8_t followingButtonToClick = 0;
@@ -94,6 +104,18 @@ ISR( PCINT1_vect ) {
 }
 
 
+// This ISR runs every 4 ms
+ISR( TIMER2_COMPA_vect ) {
+    counter++; // to check time
+  
+    if ( ( (counter + 1) % secondsMultiple ) == 0 ) seconds--;
+
+    // Generates a new tile at the speed decided previously
+    if ( ( (counter + 1) % speedMultiple ) == 0 ) { 
+      generateTileNow = true;
+      lightDownAllLeds();
+    }
+}
 
 
 
@@ -131,16 +153,12 @@ void startGame() {
   playGame(gameSpeed);
   
   free(gameSpeed);
-  // endGame();
+  #ifdef ALLOW_END_GAME
+    // endGame();
+  #endif
 }
 
-typedef struct {
-  char* rowOne;
-  char* rowTwo;
-} ROWS;
 
-int seconds = 60;
-int score = 500;
 
 void playGame(int* gameSpeedChosen) {
   speedMultiple =  (*gameSpeedChosen == 1) ? 500 : 
@@ -165,11 +183,11 @@ void playGame(int* gameSpeedChosen) {
   game->rowOne[MAX_ROW_LENGTH] = '\0';
   game->rowTwo[MAX_ROW_LENGTH] = '\0';
 
-  int volume = 0;
+  // int volume = 0;
   while ( continueGame ) {
 
     if ( generateTileNow ) {
-      volume++;
+      // volume++;
       generateTile( game );
     }
 
@@ -179,12 +197,14 @@ void playGame(int* gameSpeedChosen) {
       if (lastButtonClicked == followingButtonToClick) {
         lightUpAllLeds();
         removeTile( game );
+      } else {
+        score -= 10;
       }
 
       buttonClicked = false;
     }
 
-    writeNumber(seconds);
+    displaySecondsLeft();
   }
   
   // // endGame(game); -> init usart and print things and turn LCD off but use display!
@@ -193,30 +213,21 @@ void playGame(int* gameSpeedChosen) {
   free(game);
 } // play game function
 
-// char speedvalue[10] = "";
-// This ISR runs every 4 ms
-ISR( TIMER2_COMPA_vect ) {
-    counter++; // to check time
-  
-    // turnDisplayOFF();
-    if ( ( (counter + 1) % secondsMultiple ) == 0 ) seconds--;
 
-    // Generates a new tile at the speed decided previously
-    if ( ( (counter + 1) % speedMultiple ) == 0 ) { 
-      generateTileNow = true;
-      
-      // printf("\n generate tiles now is : %d\n", generateTileNow);
-      lightDownAllLeds();
-
-
-
-      // sprintf(speedvalue, "%d", seconds);
-
-      // updateLCDScreen(1, "Value of speed:", NONE, "");
-      // updateLCDScreen(2, speedvalue, NONE, "");
-    }
-
+void displaySecondsLeft() {
+  // writeNumberToSegmentAnir(FIRST_DIGIT, EMPTY_DIGIT);
+  // writeNumberToSegmentAnir(SECOND_DIGIT, EMPTY_DIGIT);
+  if (seconds >= 1) { 
+    writeIntToSegmentAnir( FIRST_DIGIT , seconds / 10 );
+    writeIntToSegmentWithDotAnir( SECOND_DIGIT , seconds % 10 );
+  } else {
+    writeNumberToSegmentAnir( FIRST_DIGIT, EMPTY_DIGIT );
+    writeNumberToSegmentAnir( SECOND_DIGIT, EMPTY_DIGIT );
+  }
+  writeIntToSegmentAnir( THIRD_DIGIT  , score / 10 );
+  writeIntToSegmentAnir( FOURTH_DIGIT , score % 10 );
 }
+
 
 void removeTile( ROWS* game ) {
   for ( int i = 16 ; i>=0 ; i-- ) {
@@ -262,6 +273,13 @@ void generateTile( ROWS* game ) {
 }
 
 void shiftAndAddTiles( int tile, ROWS* game ) {
+  // initUSART()
+  if ( ((game->rowOne[15] == '-') && (game->rowTwo[15] == ' ')) || 
+       ((game->rowOne[15] == ' ') && (game->rowTwo[15] == '`')) ||
+       ((game->rowOne[15] == ' ') && (game->rowTwo[15] == '_')) ) {
+    score -= 5;
+  }
+
   /* First I create a copy of the current state of the tiles in the game */
   char* rowOneCopy = malloc( MAX_ROW_LENGTH + 1 );
   char* rowTwoCopy = malloc( MAX_ROW_LENGTH + 1 );
