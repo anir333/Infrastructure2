@@ -20,7 +20,7 @@
 #define true  1
 #define false 0
 
-// Comment this line if you want to test the game so that the game doesn't end
+  // Comment the next line if you want to test the game so that the game doesn't end
 #define ALLOW_END_GAME true
 
 // Comment this line to play the game without the buzzer making sound
@@ -156,8 +156,11 @@ ISR( TIMER2_COMPA_vect ) {
     counter++; // to check time
   
     if ( ( (counter + 1) % secondsMultiple ) == 0 ) seconds--;
-    if ( seconds < 1 ) seconds = 99; 
-    if ( score < 1 ) score = 90;
+
+    #if !defined(ALLOW_END_GAME)
+      if ( seconds < 1 ) seconds = 99; 
+      if ( score < 1 ) score = 90;    
+    #endif
 
     // Generates a new tile at the speed decided previously
     if ( ( (counter + 1) % speedMultiple ) == 0 ) { 
@@ -177,7 +180,7 @@ int main() {
     enableAllLeds(); // enable all LEDs for ouput
     enableAllButtons(); // enable all buttons for input
     enableAllButtonInterrupts(); // enable the interrupts for all the buttons
-    // enableBuzzerOnPORTC();
+    // Initialisation to the serial monitor is done at the end of the game since it messes up with the LCD display during the game
 
     waitForStartOfGame();
     
@@ -202,11 +205,16 @@ void startGame() {
   playGame(gameSpeed);
   
   free(gameSpeed);
-  #ifdef ALLOW_END_GAME
-    // endGame();
-  #endif
+
+  endGame();
 }
 
+
+void endGame() {
+  initUSART();
+
+  printf("\n\n\n\n GAME ENDED \n\n\n\n");
+}
 
 
 void playGame(int* gameSpeedChosen) {
@@ -254,18 +262,6 @@ void playGame(int* gameSpeedChosen) {
 
   free(songChosen);
   free(gameSong);
-  
-  
-  // initUSART();
-  // printf("\n\n\n PRINTING SONG CHOSEN NOTES:\n");
-  // for (int i = 0; i<50; i++) {
-  //   printf("%d, ", game->melody.song[i]);
-  // }
-
-  // printf("\n\n\n PRINTING SONG 1:\n");
-  // for (int i = 0; i<50; i++) {
-  //   printf("%d, ", song1[i]);
-  // }
 
   while ( continueGame ) {
 
@@ -289,6 +285,10 @@ void playGame(int* gameSpeedChosen) {
     }
 
     displaySecondsLeft();
+    
+    #ifdef ALLOW_END_GAME
+      checkGameEnd();
+    #endif
   }
   
   // // endGame(game); -> init usart and print things and turn LCD off but use display!
@@ -297,13 +297,16 @@ void playGame(int* gameSpeedChosen) {
   free(game);
 } // play game function
 
+void checkGameEnd() {
+  if ( ( score <= 0 ) || ( seconds < 1 ) ) {
+    continueGame = false;
+  }
+}
+
 void playSound( ROWS* game ) {
   note++;
   if (note > 49) note = 0;
-  // printf("\n\n\n PRINTING SONG CHOSEN NOTES:\n");
-  // for (int i = 0; i<50; i++) {
-  //   printf("%d, ", game->melody.song[i]);
-  // }
+
   enableBuzzerOnPORTC();
   playToneForBuzzerOnPORTC( game->melody.song[note], 150 );
 }
