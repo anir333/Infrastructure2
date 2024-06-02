@@ -52,11 +52,12 @@ AND ALSO REMEMBER TO FREE ALL ALLOCATIONS
 uint8_t gameStarted = false;
 uint8_t speedChosen = false;
 uint16_t speedMultiple = 250; // default 1 second speed but can change up to 500 or as low as 125
+uint16_t secondsMultiple = 250;
 uint8_t continueGame = true;
 volatile uint8_t buttonClicked = false;
 volatile uint8_t lastButtonClicked = 0;
 volatile uint8_t followingButtonToClick = 0;
-volatile uint8_t generateTileNow = false;
+volatile uint8_t generateTileNow = true; // set to false to make game start with a bit of delay (around 1-2 seconds)
 volatile unsigned long counter = 0;
 /* END of global variables */
 
@@ -138,6 +139,8 @@ typedef struct {
   char* rowTwo;
 } ROWS;
 
+int seconds = 60;
+int score = 500;
 
 void playGame(int* gameSpeedChosen) {
   speedMultiple =  (*gameSpeedChosen == 1) ? 500 : 
@@ -147,13 +150,10 @@ void playGame(int* gameSpeedChosen) {
                   ((*gameSpeedChosen == 5) ? 125 : 250 ))));
   initTimer(speedMultiple);
   startTimer();
-  // initUSART();
-  // while(1) {
-  //   printf("\n\n\n multiple: %d, gamsespeedchosen: %d\n\n\n", speedMultiple, *gameSpeedChosen);
-  // }
 
   srand(ADC); // seed the random generator with the speed level chosen (value read by potentiometer) to genuenly generate random tiles in every game
 
+  secondsMultiple = speedMultiple == 250 ? speedMultiple : (speedMultiple == 125 ? 500 : (speedMultiple == 188 ? 350 : (speedMultiple == 400 ? 415 : 250))); 
 
   ROWS* game = malloc(sizeof(ROWS));
   game->rowOne = malloc(MAX_ROW_LENGTH + 1);
@@ -166,7 +166,6 @@ void playGame(int* gameSpeedChosen) {
   game->rowTwo[MAX_ROW_LENGTH] = '\0';
 
   int volume = 0;
-  // initUSART();
   while ( continueGame ) {
 
     if ( generateTileNow ) {
@@ -184,25 +183,29 @@ void playGame(int* gameSpeedChosen) {
 
       buttonClicked = false;
     }
+
+    writeNumber(seconds);
   }
   
   // // endGame(game); -> init usart and print things and turn LCD off but use display!
   free(game->rowOne);
   free(game->rowTwo);
   free(game);
-}
+} // play game function
 
-int seconds = 0;
 // char speedvalue[10] = "";
 // This ISR runs every 4 ms
 ISR( TIMER2_COMPA_vect ) {
     counter++; // to check time
   
+    // turnDisplayOFF();
+    if ( ( (counter + 1) % secondsMultiple ) == 0 ) seconds--;
+
     // Generates a new tile at the speed decided previously
-    if ( ( (counter + 1) % speedMultiple) == 0 ) { 
+    if ( ( (counter + 1) % speedMultiple ) == 0 ) { 
       generateTileNow = true;
+      
       // printf("\n generate tiles now is : %d\n", generateTileNow);
-      seconds++;
       lightDownAllLeds();
 
 
