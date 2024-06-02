@@ -205,11 +205,10 @@ void playGame(int* gameSpeedChosen) {
       if ( lastButtonClicked == followingButtonToClick ) {
         lightUpAllLeds();
         removeTile( game );
-        enableBuzzerOnPORTC();
-         playToneForBuzzerOnPORTC( 523, 150 );
-          _delay_ms( 150 ); 
+        playSound();
       } else {
         score -= 10;
+        playErrorSound();
       }
 
       buttonClicked = false;
@@ -224,6 +223,17 @@ void playGame(int* gameSpeedChosen) {
   free(game);
 } // play game function
 
+void playSound() {
+  enableBuzzerOnPORTC();
+  playToneForBuzzerOnPORTC( 2080, 150 );
+}
+
+void playErrorSound() {
+  enableBuzzerOnPORTC();
+  playToneForBuzzerOnPORTC( 200, 50 ); // 1080 | 150
+  _delay_ms(50);
+  playToneForBuzzerOnPORTC( 200, 50 );  
+}
 
 void displaySecondsLeft() {
   if (seconds >= 1) { 
