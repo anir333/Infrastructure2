@@ -56,21 +56,6 @@
 #define A5 880.00
 #define B5 987.770
 #define C6 1046.500
-// #define C4 2
-// #define D4 2
-// #define E4 3
-// #define F4 3
-// #define G4 3
-// #define A4 4
-// #define B4 4
-// #define C5 5
-// #define D5 5
-// #define E5 6
-// #define F5 6
-// #define G5 7
-// #define A5 8
-// #define B5 9
-// #define C6 1
 
 /* END of Definitions */
 
@@ -88,6 +73,7 @@ typedef struct {
 } ROWS;
 
 // I used the help of ChatGPT to generate these melodies
+  // I had to make them integers to simplify the program...
 const int song1[50] = {C5, D5, E5, F5, G5, A5, B5, C6, C5, D5, E5, F5, G5, A5, B5, C6, C5, D5, E5, F5, G5, A5, B5, C6, C5, D5, E5, F5, G5, A5, B5, C6, C5, D5, E5, F5, G5, A5, B5, C6, C5, D5, E5, F5, G5, A5, B5, C6, C5, D5};
 const int song2[50] = {C5, E5, G5, C6, B5, A5, G5, F5, E5, D5, C5, G5, E5, C5, G5, A5, B5, C6, D5, E5, F5, E5, D5, C5, B4, A4, G4, F4, E4, D4, C4, E4, G4, A4, G4, F4, E4, D4, C4, B4, C5, E5, G5, C6, B5, A5, G5, F5, E5, D5};
 const int song3[50] = {C5, E5, G5, C6, B5, A5, G5, F5, E5, D5, C5, G5, E5, C5, G5, A5, B5, C6, D5, E5, F5, E5, D5, C5, B4, A4, G4, F4, E4, D4, C4, E4, G4, A4, G4, F4, E4, D4, C4, B4, C5, E5, G5, C6, B5, A5, G5, F5, E5, D5};
@@ -190,13 +176,23 @@ int main() {
 
 
 void waitForStartOfGame() {
+  lightUpOneLed(4);
+  pauseSeconds(1);
   while (!gameStarted) {
+    //LCD display/screen
     updateLCDScreen(1, "Play Piano Tiles", NONE, "");
     updateLCDScreen(2, "Click S1 > Start", NONE, "");
+
+    // 7 segment display
+    writeString("PLAY"); // displayed on the 7 segment display
+    turnDisplayOFF(); // it turns it off for a tiny bit of a milisecond to give a better visual
   }
+  lightDownOneLed(4);
 
   startGame();
 }
+
+
 
 void startGame() {
   int* gameSpeed = calloc(1, sizeof(uint8_t));
@@ -506,60 +502,6 @@ void showSpeedOnLCD() {
 
 
 
-
-
-
-
-// void startTimer1() {
-//     TCCR1B |= _BV(CS12) | _BV(CS10);  // Set prescaler to 1024
-// }
-
-// void stopTimer1() {
-//     TCCR1B &= ~(_BV(CS12) | _BV(CS11) | _BV(CS10));  // Stop the timer
-// }
-
-// void initTimer1(uint16_t compareMatch) {
-//     // Set Timer/Counter Control Register A (TCCR1A) to normal mode
-//     TCCR1A = 0;
-
-//     // Set WGM bits in TCCR1B for CTC mode (WGM12 = 1)
-//     TCCR1B |= _BV(WGM12);
-
-//     // Enable the Output Compare A Match interrupt for Timer 1
-//     TIMSK1 |= _BV(OCIE1A);
-
-//     // Set the compare match value
-//     OCR1A = compareMatch - 1;
-
-//     // Enable global interrupts
-//     sei();
-// }
-
-// #define C5 523.250
-// #define D5 587.330
-// #define E5 659.250
-// #define F5 698.460
-// #define G5 783.990
-// #define A5 880.00
-// #define B5 987.770
-// #define C6 1046.500
-
-// ISR(TIMER1_COMPA_vect) {
-//     if ( buttonClicked ) {
-//       if (lastButtonClicked == followingButtonToClick) {
-
-//          enableBuzzerOnPORTC();
-//          playToneForBuzzerOnPORTC( C5, 150 );
-//           _delay_ms( 150 ); 
-
-//         buttonClicked = false;
-//       } 
-//       // else {
-//         // playErrorSound();
-//       // }
-//     }
-
-// }
 
 
 
