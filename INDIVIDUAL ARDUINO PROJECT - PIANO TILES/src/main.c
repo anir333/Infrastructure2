@@ -55,6 +55,7 @@ uint16_t speedMultiple = 250; // default 1 second speed but can change up to 500
 uint8_t continueGame = true;
 volatile uint8_t buttonClicked = false;
 volatile uint8_t lastButtonClicked = 0;
+volatile uint8_t followingButtonToClick = 0;
 volatile uint8_t generateTileNow = false;
 volatile unsigned long counter = 0;
 /* END of global variables */
@@ -139,9 +140,17 @@ typedef struct {
 
 
 void playGame(int* gameSpeedChosen) {
-  speedMultiple = (*gameSpeedChosen == 1) ? 500 : ((*gameSpeedChosen == 2) ? 375 : ((*gameSpeedChosen == 3) ? 250 : ((*gameSpeedChosen == 4) ? 188 : ((*gameSpeedChosen == 5) ? 125 : 250 ))));
+  speedMultiple =  (*gameSpeedChosen == 1) ? 500 : 
+                  ((*gameSpeedChosen == 2) ? 400 : 
+                  ((*gameSpeedChosen == 3) ? 250 : 
+                  ((*gameSpeedChosen == 4) ? 188 : 
+                  ((*gameSpeedChosen == 5) ? 125 : 250 ))));
   initTimer(speedMultiple);
   startTimer();
+  // initUSART();
+  // while(1) {
+  //   printf("\n\n\n multiple: %d, gamsespeedchosen: %d\n\n\n", speedMultiple, *gameSpeedChosen);
+  // }
 
   srand(ADC); // seed the random generator with the speed level chosen (value read by potentiometer) to genuenly generate random tiles in every game
 
@@ -168,29 +177,30 @@ void playGame(int* gameSpeedChosen) {
     checkNextTile( game );
 
     if ( buttonClicked ) {
+      if (lastButtonClicked == followingButtonToClick) {
+        lightUpAllLeds();
+      }
 
+      buttonClicked = false;
     }
   }
   
-  // free(game->rowOne);
-  // free(game->rowTwo);
-  // free(game);
-
-
-  // ROWS* game = malloc( sizeof(ROWS) );
-  // game->rowOne = malloc( MAX_ROW_LENGTH + 1 );
-  // (*game).rowTwo = malloc( MAX_ROW_LENGTH + 1 );
-  
-  // while (continueGame) {
-  //   if (generateTileNow) generateTile(game);
-  // }
-
   // // endGame(game); -> init usart and print things and turn LCD off but use display!
-  // free(game);
+  free(game->rowOne);
+  free(game->rowTwo);
+  free(game);
 }
 
 void checkNextTile( ROWS* game ) {
-
+  for ( int i = 0 ; i<16 ; i++ ) {
+    if ( (game->rowOne[i] == ' ') && (game->rowTwo[i] == '_') ) {
+      followingButtonToClick = 1;
+    } else if ( (game->rowOne[i] == ' ') && (game->rowTwo[i] == '`') ) {
+      followingButtonToClick = 2;
+    } else if ( (game->rowOne[i] == '-') && (game->rowTwo[i] == ' ') ) {
+      followingButtonToClick = 3;
+    }
+  }
 }
 
 void generateTile( ROWS* game ) {
@@ -243,6 +253,7 @@ void shiftAndAddTiles( int tile, ROWS* game ) {
     game->rowOne[i] = rowOneCopy[i-1];
     game->rowTwo[i] = rowTwoCopy[i-1];
   }
+  // printf("\nemosido enganyado\n");
 
   /* Freeing the space of the copies I made */
   free( rowOneCopy );
