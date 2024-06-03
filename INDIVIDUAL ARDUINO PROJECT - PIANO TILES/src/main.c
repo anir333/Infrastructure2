@@ -201,6 +201,11 @@ void waitForStartOfGame() {
 // this function first calls the choose speed function which allows the user to turn the potentiometer to choose the speed for the games at which the tiles are generated, then once the speed is chosen, it starts the game by calling the play game function, finally, when the game ends it calls the endGame function
 void startGame() {
   int* gameSpeed = calloc(1, sizeof(uint8_t));
+
+  if (!gameSpeed || gameSpeed == NULL) {
+    endGameByMemoryAllocationFail();
+    return;
+  }
   
   chooseSpeed(gameSpeed);
   playGame(gameSpeed);
@@ -244,6 +249,11 @@ void playGame(int* gameSpeedChosen) {
   uint8_t* songChosen = calloc(1, sizeof(uint8_t));
   MELODY* gameSong = malloc( sizeof( MELODY ) );
 
+  if ((!songChosen || songChosen == NULL) || (!gameSong || gameSong == NULL)) {
+    endGameByMemoryAllocationFail();
+    return;
+  }
+
   // chooses a song from 1 to 5
   *songChosen = rand() % 5 + 1;
 
@@ -268,6 +278,11 @@ void playGame(int* gameSpeedChosen) {
   game->rowOne = malloc(MAX_ROW_LENGTH + 1);
   game->rowTwo = malloc(MAX_ROW_LENGTH + 1);
   game->melody = *gameSong;
+
+  if ((!game || game == NULL) || (!game->rowOne || game->rowOne == NULL) || (!game->rowTwo || game->rowTwo == NULL)) {
+    endGameByMemoryAllocationFail();
+    return;
+  }
 
   // With the memset() function I initialise all values of the rows of the GAME to EMPTY_TILE == ' ' in order to NOT have garbage data in those values, and then I make sure the array is finished with a \0 byte since with dynamic allocation this is not done automatically
   memset(game->rowOne, EMPTY_TILE, MAX_ROW_LENGTH);
@@ -471,6 +486,12 @@ void checkNextTile( GAME* game ) {
 /// @param game a pointer to the game that contains the rows and the melody
 void generateTile( GAME* game ) {
   int* randomTileNumber = calloc( 1, sizeof(uint8_t) );
+  
+  if ((!randomTileNumber || randomTileNumber == NULL)) {
+    endGameByMemoryAllocationFail();
+    return;
+  }
+
   *randomTileNumber = rand() % 3 + 1; // generates a random number between 1 and 3 inclusive
 
     if ( *randomTileNumber == 1 ) {
@@ -503,6 +524,12 @@ void shiftAndAddTiles( int tile, GAME* game ) {
   /* First I create a copy of the current state of the tiles in the game */
   char* rowOneCopy = malloc( MAX_ROW_LENGTH + 1 );
   char* rowTwoCopy = malloc( MAX_ROW_LENGTH + 1 );
+
+  if ((!rowOneCopy || rowOneCopy == NULL) || (!rowTwoCopy || rowTwoCopy == NULL)) {
+    endGameByMemoryAllocationFail();
+    return;
+  }
+
   rowOneCopy[MAX_ROW_LENGTH] = '\0';
   rowTwoCopy[MAX_ROW_LENGTH] = '\0';
 
@@ -581,4 +608,12 @@ void endGame(int* score) {
       writeNumberToSegmentAnir( FOURTH_DIGIT, 0b10000000 );
     }
   }
+}
+
+// stops the game because of an error when allocating memory
+void endGameByMemoryAllocationFail() {
+    initUSART();
+    printf("\n\n MEMORY ALLOCATION FAILED ;(\n\n");
+
+    while (1);    
 }
