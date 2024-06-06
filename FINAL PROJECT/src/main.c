@@ -97,7 +97,7 @@ uint8_t continueGame = true; // becomes 0 (false) when game is lost (score <= 0)
 volatile int numberOfTilesEaten = 0;
 volatile int numberOfButtonClick = 0;
 volatile uint16_t seconds = 60; // this is the duration of the game in seconds, default 60
-volatile uint16_t score = 10; // this is the default starting score = 90
+volatile uint16_t score = 90; // this is the default starting score = 90
 volatile uint8_t note = 0;  // used to now whats the next note to be played
 volatile uint8_t buttonClicked = false;
 volatile uint8_t lastButtonClicked = 0;
