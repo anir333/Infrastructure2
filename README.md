@@ -8,35 +8,34 @@
 4. Final PROJECT
 
 - **Tree Structure** 
-                     ``` 
-Root Directory
-│
-├── README file (this)
-│
-├── ALL LIBRARIES
-│   └── lib
-│       ├── ADC&Timer lib
-│       ├── Buttons lib
-│       ├── Buzzer lib
-│       ├── Display lib
-│       ├── LEDs lib
-│       ├── USART lib
-│       └── LCD (C) lib
-│
-├── FINAL PROJECT
-│   └── src
-│       └── main.c
-│
-└── WEEKLY ASSIGNMENTS
-    ├── WEEK 1
-    ├── WEEK 2
-    ├── WEEK 3
-    └── WEEK 4
-        ├── Weekly Exercises
-        └── Weekly Projects
 
-
-```
+    ```
+    Root Directory
+    │
+    ├── README file (this)
+    │
+    ├── ALL LIBRARIES
+    │   └── lib
+    │       ├── ADC&Timer lib
+    │       ├── Buttons lib
+    │       ├── Buzzer lib
+    │       ├── Display lib
+    │       ├── LEDs lib
+    │       ├── USART lib
+    │       └── LCD (C) lib
+    │
+    ├── FINAL PROJECT
+    │   └── src
+    │       └── main.c
+    │
+    └── WEEKLY ASSIGNMENTS
+        ├── WEEK 1
+        ├── WEEK 2
+        ├── WEEK 3
+        └── WEEK 4
+            ├── Weekly Exercises
+            └── Weekly Projects
+    ```
 
 
 
