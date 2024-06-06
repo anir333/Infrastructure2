@@ -1,3 +1,37 @@
+# Infrastructure Portfolio README - Term 4 - Anir Aoulad Haddou Saddik - ACS104A - 2023/24
+
+## What you'll find in my portfolio:
+
+1. All Weekly Exercises Completed
+2. All Weekly Projects Completed
+3. All libraries neccesary
+4. Final PROJECT
+
+- **Tree Structure** 
+                      
+                      Root Directory 
+                            |
+                ------------------------------------------------------------> README file (this)
+                |                      |                             |
+          ALL LIBRARIES           FINAL PROJECT               WEEKLY ASSIGNMENTS
+                |                      |                             |
+               lib                    src              ---------------------------------------- 
+                |                      |               |             |            |           |
+      -------------------            main.c         WEEK 1         WEEK 2       WEEK 3      WEEK 4
+      |         |       |
+ADC&Timer lib   |    Buttons lib
+      -------------------
+      |         |        |           
+Buzzer lib      |     Display lib
+   ---------------------------
+   |            |            |
+LEDs lib  |  USART lib  | LCD (C) lib
+
+
+
+
+
+
 - Final Project: Piano Tiles; by Anir Aoulad Haddou Saddik - ACS104A
 ---
 
