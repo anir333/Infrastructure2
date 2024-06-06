@@ -1,7 +1,7 @@
 - Final Project: Piano Tiles; by Anir Aoulad Haddou Saddik - ACS104A
 ---
 
-### Piano Tiles Game using Arduino
+# Piano Tiles Game using Arduino
 
 ## Overview
 
