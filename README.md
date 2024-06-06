@@ -9,9 +9,9 @@
 
 - **Tree Structure** 
                       
-                      Root Directory 
-                            |
-                ------------------------------------------------------------> README file (this)
+                                        Root Directory 
+                                              |
+                --------------------------------------------------------------> README file (this)
                 |                      |                             |
           ALL LIBRARIES           FINAL PROJECT               WEEKLY ASSIGNMENTS
                 |                      |                             |
@@ -19,7 +19,7 @@
                 |                      |               |             |            |           |
       -------------------            main.c         WEEK 1         WEEK 2       WEEK 3      WEEK 4
       |         |       |
-ADC&Timer lib   |    Buttons lib
+ADC and Timer lib   |    Buttons lib
       -------------------
       |         |        |           
 Buzzer lib      |     Display lib
