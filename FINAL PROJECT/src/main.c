@@ -182,14 +182,13 @@ void waitForStartOfGame() {
   lightUpOneLed(4);
   pauseSeconds(1);
 
+  //LCD display/screen
+  updateLCDScreen(1, "Play Piano Tiles", NONE, "");
+  updateLCDScreen(2, "Click S1 > Start", NONE, "");
+  
   while (!gameStarted) {
-    //LCD display/screen
-    updateLCDScreen(1, "Play Piano Tiles", NONE, "");
-    updateLCDScreen(2, "Click S1 > Start", NONE, "");
-
-    // 8 segment display
-    writeString("PLAY"); // displayed on the 8 segment display
-    turnDisplayOFF(); // it turns it off for a tiny bit of a milisecond to give a better visual
+    // 8 segment display 
+    writeStringAndWait( "PLAY", 1 );
   }
 
   lightDownOneLed(4);

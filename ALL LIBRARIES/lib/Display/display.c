@@ -133,6 +133,7 @@ void writeString(char* str) {
   for (int i = 0; i < 4; i++) {
       int segment = i == 0 ? FIRST_DIGIT : ( i == 1 ? SECOND_DIGIT : (i == 2 ? THIRD_DIGIT : (i == 3 ? FOURTH_DIGIT : 0)) );
       writeCharToSegment( segment, *str);
+      _delay_ms(2.5);
       str++;
   }
 }
