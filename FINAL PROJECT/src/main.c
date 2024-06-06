@@ -3,7 +3,7 @@
 #include <util/delay.h>
 #include <usart.h>
 #include <stdlib.h>
-#include <stdio.h>
+// #include <stdio.h> //
 #include <string.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -46,22 +46,22 @@
 #define TILE3 '_'
 #define EMPTY_TILE ' '
 
-// FREQUENCIES OF THE NOTES to be used for different melodies
-#define C4 261.63
-#define D4 293.66
-#define E4 329.63
-#define F4 349.23
-#define G4 392.00
-#define A4 440.00
-#define B4 493.88
-#define C5 523.250
-#define D5 587.330
-#define E5 659.250
-#define F5 698.460
-#define G5 783.990
-#define A5 880.00
-#define B5 987.770
-#define C6 1046.500
+// FREQUENCIES OF THE NOTES to be used for different melodies (sharp frequencies)
+#define C4 261
+#define D4 293
+#define E4 329
+#define F4 349
+#define G4 392
+#define A4 440
+#define B4 493
+#define C5 523
+#define D5 587
+#define E5 659
+#define F5 698
+#define G5 783
+#define A5 880
+#define B5 987
+#define C6 1046
 
 /* END of Definitions/Macros */
 
@@ -79,7 +79,6 @@ typedef struct {
 } GAME;
 
 // I used the help of ChatGPT to generate these melodies
-  // I had to make them integers to simplify the program since making the array type float was causing a lot of errors...
 const int song1[50] = {C5, D5, E5, F5, G5, A5, B5, C6, C5, D5, E5, F5, G5, A5, B5, C6, C5, D5, E5, F5, G5, A5, B5, C6, C5, D5, E5, F5, G5, A5, B5, C6, C5, D5, E5, F5, G5, A5, B5, C6, C5, D5, E5, F5, G5, A5, B5, C6, C5, D5};
 const int song2[50] = {C5, E5, G5, C6, B5, A5, G5, F5, E5, D5, C5, G5, E5, C5, G5, A5, B5, C6, D5, E5, F5, E5, D5, C5, B4, A4, G4, F4, E4, D4, C4, E4, G4, A4, G4, F4, E4, D4, C4, B4, C5, E5, G5, C6, B5, A5, G5, F5, E5, D5};
 const int song3[50] = {C5, E5, G5, C6, B5, A5, G5, F5, E5, D5, C5, G5, E5, C5, G5, A5, B5, C6, D5, E5, F5, E5, D5, C5, B4, A4, G4, F4, E4, D4, C4, E4, G4, A4, G4, F4, E4, D4, C4, B4, C5, E5, G5, C6, B5, A5, G5, F5, E5, D5};
@@ -95,8 +94,8 @@ uint16_t secondsMultiple = 250; // used with for the time counter
 uint8_t continueGame = true; // becomes 0 (false) when game is lost (score <= 0) or time is up
 volatile int numberOfTilesEaten = 0;
 volatile int numberOfButtonClick = 0;
-volatile uint16_t seconds = 60; // this is the duration of the game in seconds
-volatile uint16_t score = 90; // this is the default starting score
+volatile uint16_t seconds = 60; // this is the duration of the game in seconds, default 60
+volatile uint16_t score = 90; // this is the default starting score = 90
 volatile uint8_t note = 0;  // used to now whats the next note to be played
 volatile uint8_t buttonClicked = false;
 volatile uint8_t lastButtonClicked = 0;
@@ -592,21 +591,25 @@ void endGame(int* score) {
   printf("\n************** Number of times clicked: %d ***************\n", numberOfButtonClick);
   printf("\n************* Total number of tiles eaten: %d ************\n\n", numberOfTilesEaten);
   printf("**********************************************************\n\n\n\n");
- 
+  
+  // used to display a value in the 8 segment display (0 if you lost, 1 if you won)
+  writeNumberToSegmentAnir( FOURTH_DIGIT, *score <= 0 ? 0b11000000 : 0b11111001 );
+
   // Finally show a SMILEY face on the 8 segment display if the player WON and a SAD face if the player LOST
-  while (1) {
-    if ( *score <= 0 ) { // SAD face cause player lost
-      writeNumberToSegmentAnir( FIRST_DIGIT, 0xFF );
-      writeNumberToSegmentAnir( SECOND_DIGIT, 0xFF );
-      writeNumberToSegmentAnir( THIRD_DIGIT, 0b11110000 );
-      writeNumberToSegmentAnir( FOURTH_DIGIT, 0b10000000 );
-    } else { // SMILEY face cause the player won
-      writeNumberToSegmentAnir( FIRST_DIGIT, 0xFF );
-      writeNumberToSegmentAnir( SECOND_DIGIT, 0xFF );
-      writeNumberToSegmentAnir( THIRD_DIGIT, 0b11000110 );
-      writeNumberToSegmentAnir( FOURTH_DIGIT, 0b10000000 );
+   while (1) {
+        // Light up each LED one by one
+        for (int i = 1; i <= 4; i++) {
+            lightUpOneLed(i);
+            _delay_ms(100);
+        }
+
+        // Light down each LED one by one
+        for (int i = 1; i <= 4; i++) {
+            lightDownOneLed(i);
+            _delay_ms(100);
+        }
+
     }
-  }
 }
 
 // stops the game because of an error when allocating memory
