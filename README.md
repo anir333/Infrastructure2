@@ -8,27 +8,6 @@
 4. Final PROJECT
 
 - **Tree Structure** 
-```            
-                                        Root Directory 
-                                              |
-                --------------------------------------------------------------> README file (this)
-                |                      |                             |
-          ALL LIBRARIES           FINAL PROJECT               WEEKLY ASSIGNMENTS
-                |                      |                             |
-               lib                    src              ---------------------------------------- 
-                |                      |               |             |            |           |
-      -------------------            main.c         WEEK 1         WEEK 2       WEEK 3      WEEK 4
-      |         |       |                              |             |            |           |
-ADC&Timer lib   |    Buttons lib                       ----------------------------------------
-      -------------------                                                   |
-      |         |        |                                            Weekly Exercises
-Buzzer lib      |     Display lib                                            &
-   ---------------------------                                         Weekly Projects
-   |            |            |
-LEDs lib  |  USART lib  | LCD (C) lib
-
-```
-
 ```
     Root Directory
     │
