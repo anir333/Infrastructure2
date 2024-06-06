@@ -9,23 +9,31 @@
 
 - **Tree Structure** 
                       
-                                        Root Directory 
-                                              |
-                --------------------------------------------------------------> README file (this)
-                |                      |                             |
-          ALL LIBRARIES           FINAL PROJECT               WEEKLY ASSIGNMENTS
-                |                      |                             |
-               lib                    src              ---------------------------------------- 
-                |                      |               |             |            |           |
-      -------------------            main.c         WEEK 1         WEEK 2       WEEK 3      WEEK 4
-      |         |       |                              |             |            |           |
-ADC&Timer lib   |    Buttons lib                       ----------------------------------------
-      -------------------                                                   |
-      |         |        |                                            Weekly Exercises
-Buzzer lib      |     Display lib                                            &
-   ---------------------------                                         Weekly Projects
-   |            |            |
-LEDs lib  |  USART lib  | LCD (C) lib
+Root Directory
+│
+├── README file (this)
+│
+├── ALL LIBRARIES
+│   └── lib
+│       ├── ADC&Timer lib
+│       ├── Buttons lib
+│       ├── Buzzer lib
+│       ├── Display lib
+│       ├── LEDs lib
+│       ├── USART lib
+│       └── LCD (C) lib
+│
+├── FINAL PROJECT
+│   └── src
+│       └── main.c
+│
+└── WEEKLY ASSIGNMENTS
+    ├── WEEK 1
+    ├── WEEK 2
+    ├── WEEK 3
+    └── WEEK 4
+        ├── Weekly Exercises
+        └── Weekly Projects
 
 
 
@@ -36,27 +44,6 @@ LEDs lib  |  USART lib  | LCD (C) lib
 ---
 
 # Piano Tiles Game using Arduino
-
-- Root Directory
-  - README file (this)
-  - ALL LIBRARIES
-    - lib
-      - ADC&Timer lib
-      - Buttons lib
-      - Buzzer lib
-      - Display lib
-      - LEDs lib
-      - USART lib
-      - LCD (C) lib
-  - FINAL PROJECT
-    - src
-      - main.c
-  - WEEKLY ASSIGNMENTS
-    - WEEK 1
-    - WEEK 2
-    - WEEK 3
-    - WEEK 4
-
 
 ## Overview
 
