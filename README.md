@@ -37,6 +37,42 @@
             └── Weekly Projects
     ```
 
+
+# All Libraries
+- **Contains all my personal libraries developed during the semester and other ones used (usart/LCD)**
+  - **LEDs**
+    - Contains functions to enable LEDs, light up and down LEDs and much more...
+  - **Buttons**
+    - Contains functions to enable Buttons, to enable Button interrupts and more...
+  - **ADC&Timer**
+    - Contains functions to initialize the ADC and timer functions
+  - **Display**
+    - Contains provided and personalized functions to control the 8 segment display
+  - **Buzzer**
+    - Contains functions to initialize the Buzzer for output and play tones
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - Final Project: Piano Tiles; by Anir Aoulad Haddou Saddik - ACS104A
 ---
 
