@@ -8,7 +8,7 @@
 4. Final PROJECT
 
 - **Tree Structure** 
-                      
+                     ``` 
 Root Directory
 │
 ├── README file (this)
@@ -36,7 +36,7 @@ Root Directory
         └── Weekly Projects
 
 
-
+```
 
 
 
