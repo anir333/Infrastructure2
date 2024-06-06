@@ -4,8 +4,8 @@
 
 1. All Weekly Exercises Completed
 2. All Weekly Projects Completed
-3. All libraries necessary
-4. Final PROJECT
+3. All libraries necessary with extra functions I added for personal use
+4. Final PROJECT completed
 
 - **Tree Structure**
 
@@ -53,63 +53,41 @@
 
 
 
+# FINAL PROJECT
+## Piano Tiles Game with an LCD display
 
+- **Overview**
+  - This project is an implementation of a Piano Tiles game using an Arduino, an LCD display, and an expansion shield with various components. The game involves pressing buttons corresponding to the tiles displayed on the LCD screen within a certain time limit. It also includes a melody that plays during the game and updates the score based on the player's performance.
 
+- **Materials**
+  1. Arduino UNO
+  2. Multifunctional Expansion Shield
+  3. Small and Long Breadboard
+  4. Buttons (on expansion shield)
+  5. Potentiometer
+  6. LCD display 16x2 // two rows of 16 segments each
+  7. One Resistor for the LCD display LED
+  9. Jump Wires
+  10. Buzzer
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-- Final Project: Piano Tiles; by Anir Aoulad Haddou Saddik - ACS104A
----
-
-# Piano Tiles Game using Arduino
-
-## Overview
-
-This project is an implementation of a Piano Tiles game using an Arduino, an LCD display, and an expansion shield with various components. The game involves pressing buttons corresponding to the tiles displayed on the LCD screen within a certain time limit. It also includes a melody that plays during the game and updates the score based on the player's performance.
 
 ## Features
 
-- **LCD Display**: Shows the game tiles and game status.
-- **Button Detection**: Detects button presses to interact with the game.
-- **Buzzer**: Plays melodies and sound effects.
-- **LED Control**: Indicates game status and button presses.
-- **8-Segment Display**: Shows game speed and score.
+- **LCD Display**: Shows the game tiles as they move downwards.
+- **Button Detection**: Detects button presses to interact with the game tiles.
+- **Buzzer**: Plays melodies and error sound effects during the game.
+- **LED Control**: Indicates button presses (correct/wrong).
+- **8-Segment Display**: Shows the time left for the game in seconds and the score.
 - **ADC (Potentiometer)**: Used to select game speed.
 - **Timers and Interrupts**: Manages game timing and button press detection.
-- **Serial Communication**: Logs game data for debugging.
+- **Serial Communication**: Logs game data at the end with JavaFX UI.
 
-## Components
-
-- Arduino Uno
-- LCD Display
-- Expansion Shield
-- Buttons (S1, S2, S3)
-- LEDs (D1 - D4)
-- Buzzer
-- 8-Segment Display
-- Potentiometer
 
 ## Libraries Used
 
 - `util/delay.h`
 - `usart.h`
 - `stdlib.h`
-- `stdio.h`
 - `string.h`
 - `avr/io.h`
 - `avr/interrupt.h`
@@ -140,23 +118,16 @@ This project is an implementation of a Piano Tiles game using an Arduino, an LCD
 
 ### Game Start
 
-1. **Speed Selection**: Use the potentiometer to select game speed. Display the selected speed on the LCD and 8-segment display.
+1. **Speed Selection**: Use the potentiometer to select game speed. Display the selected speed on the LCD and 8-segment display, click S1 to start the game.
 2. **Play Game**: Generate random tiles on the LCD, check button presses, update the score, play sounds, and update the 8-segment display with time and score.
 
 ### Game End
 
 1. **End Conditions**: Game ends when time is up or score is 0 (if enabled by macro).
-2. **Memory Management**: Free allocated memory for game data.
-3. **Display Result**: Show final score and time on the LCD and 8-segment display.
+2. **Memory Management**: Dynamically allocated memory for game data.
+3. **Display Result**: Show final score and result on the LCD and 8-segment display.
+4. **LEDs dance**: LEDs move forward (dancing) on and off.
 
-## Macros
-
-- `ALLOW_END_GAME`: Enable/disable game end conditions.
-- `MAKE_SOUND`: Enable/disable buzzer sound.
-- `EMPTY_DIGIT`: Used to turn off digits on the 8-segment display.
-- `SPEED1 - SPEED5`: Define the speed of the game based on potentiometer input.
-- `MAX_ROW_LENGTH`: Maximum number of characters per row on the LCD.
-- `TILE1`, `TILE2`, `TILE3`, `EMPTY_TILE`: Characters representing tiles on the LCD.
 
 ## Melody
 
