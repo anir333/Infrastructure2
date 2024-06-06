@@ -1,0 +1,3 @@
+<template>
+  <input-field default="be.kdg.myapp">IJ_BASE_PACKAGE</input-field>
+</template>

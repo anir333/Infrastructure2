@@ -3,7 +3,6 @@
 #include <util/delay.h>
 #include <usart.h>
 #include <stdlib.h>
-// #include <stdio.h> //
 #include <string.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -26,6 +25,9 @@
 
     // Comment the next line to play the game without the buzzer making sound
 #define MAKE_SOUND true
+
+    // Comment this line if you want to see the game information at the end with JavaFX instead of the terminal
+#define WITH_JAVAFX true
 
     // For digits that need to be turned OFF on the 8 segment display
 #define EMPTY_DIGIT 0xFF
@@ -95,7 +97,7 @@ uint8_t continueGame = true; // becomes 0 (false) when game is lost (score <= 0)
 volatile int numberOfTilesEaten = 0;
 volatile int numberOfButtonClick = 0;
 volatile uint16_t seconds = 60; // this is the duration of the game in seconds, default 60
-volatile uint16_t score = 90; // this is the default starting score = 90
+volatile uint16_t score = 10; // this is the default starting score = 90
 volatile uint8_t note = 0;  // used to now whats the next note to be played
 volatile uint8_t buttonClicked = false;
 volatile uint8_t lastButtonClicked = 0;
@@ -578,20 +580,26 @@ void endGame(int* score) {
   // We now initalise the serial monitor to show the information about the game once it has ended
   initUSART();
 
-  printf("\n\n\n\n");
-  printf("\n**********************************************************");
-  printf("\n*************** PIANO TILES GAME ENDED *******************\n");
-  if ( *score <= 0 ) {
-    printf("\n*********************** YOU LOST! ************************\n");
-  } else {
-    printf("\n*********************** YOU WON! *************************\n");
-  }
+  #if !defined(WITH_JAVAFX)
+    printf("\n\n\n\n");
+    printf("\n**********************************************************");
+    printf("\n*************** PIANO TILES GAME ENDED *******************\n");
+    if ( *score <= 0 ) {
+      printf("\n*********************** YOU LOST! ************************\n");
+    } else {
+      printf("\n*********************** YOU WON! *************************\n");
+    }
 
-  printf("\n********************** YOUR SCORE: %d ********************\n", *score);
-  printf("\n************** Number of times clicked: %d ***************\n", numberOfButtonClick);
-  printf("\n************* Total number of tiles eaten: %d ************\n\n", numberOfTilesEaten);
-  printf("**********************************************************\n\n\n\n");
+    printf("\n********************** YOUR SCORE: %d ********************\n", *score);
+    printf("\n************** Number of times clicked: %d ***************\n", numberOfButtonClick);
+    printf("\n************* Total number of tiles eaten: %d ************\n\n", numberOfTilesEaten);
+    printf("*********************************************************\n\n\n\n");
+  #endif
   
+  #ifdef WITH_JAVAFX
+    printf("SEPARATOR%dSEPARATOR%dSEPARATOR%dSEPARATOR%dSEPARATOR***...", *score <= 0 ? 0 : 1, *score, numberOfButtonClick, numberOfTilesEaten );
+  #endif
+
   // used to display a value in the 8 segment display (0 if you lost, 1 if you won)
   writeNumberToSegmentAnir( FOURTH_DIGIT, *score <= 0 ? 0b11000000 : 0b11111001 );
 
