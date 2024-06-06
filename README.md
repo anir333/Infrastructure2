@@ -149,6 +149,17 @@ Predefined melodies are stored as arrays of notes. One of the melodies is chosen
 11. The information of the game is shown via the serial monitor by using JavaFX
 
 
+## Pictures at start and during the game
+![alt text](<WhatsApp Image 2024-06-06 at 23.45.22.jpeg>)
+
+![alt text](<WhatsApp Image 2024-06-06 at 23.45.23.jpeg>)
+
+![alt text](<WhatsApp Image 2024-06-06 at 23.45.24.jpeg>)
+
+![alt text](<WhatsApp Image 2024-06-06 at 23.45.25.jpeg>)
+
+![alt text](<WhatsApp Image 2024-06-06 at 23.45.26.jpeg>)
+
 
 
 ## Game End Picture of results in JavaFX:
